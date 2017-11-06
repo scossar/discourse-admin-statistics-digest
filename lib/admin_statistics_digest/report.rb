@@ -5,6 +5,8 @@ require_relative './most_liked_post'
 require_relative './popular_post'
 require_relative './popular_topic'
 
+require_relative './post_made'
+
 class AdminStatisticsDigest::Report
 
   REPORTS = {
@@ -14,6 +16,7 @@ class AdminStatisticsDigest::Report
     most_replied_topics: AdminStatisticsDigest::MostRepliedTopic,
     popular_posts: AdminStatisticsDigest::PopularPost,
     popular_topics: AdminStatisticsDigest::PopularTopic,
+    posts_made: AdminStatisticsDigest::PostMade,
   }.freeze
 
   def self.generate(&block)

@@ -24,6 +24,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       active_responders: active_responders(first_date, last_date, limit),
 
       active_users: active_users(first_date, last_date),
+      posts_made: posts_made(first_date, last_date),
 
       title: subject,
       subject: subject,
@@ -51,6 +52,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
 
     users.count
+  end
+
+  def posts_made(first_date, last_date)
+    posts = report.posts_made do |r|
+      r.active_range first_date..last_date
+    end
+
+    posts.count
   end
 
   def top_non_staff_users(signed_up_date, limit)
