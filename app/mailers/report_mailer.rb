@@ -23,6 +23,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       most_replied_topics: most_replied_topics(first_date, last_date, limit),
       active_responders: active_responders(first_date, last_date, limit),
 
+      active_users: active_users(first_date, last_date),
+
       title: subject,
       subject: subject,
       logo_url: logo_url,
@@ -41,6 +43,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.include_staff false
       r.limit limit
     end
+  end
+
+  def active_users(first_date, last_date)
+    users = report.active_users do |r|
+      r.active_range first_date..last_date
+    end
+
+    users.count
   end
 
   def top_non_staff_users(signed_up_date, limit)
