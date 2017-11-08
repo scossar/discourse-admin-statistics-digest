@@ -64,7 +64,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.active_range first_date..last_date
     end
 
-    users
+    users.count
   end
 
   def active_users(first_date, last_date)
