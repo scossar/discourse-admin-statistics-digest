@@ -25,6 +25,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
       active_users: active_users(first_date, last_date),
       posts_made: posts_made(first_date, last_date),
+      pages_read: pages_read(first_date, last_date),
+      new_users: new_users(first_date),
 
       title: subject,
       subject: subject,
@@ -46,6 +48,15 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
   end
 
+  def new_users(signed_up_date)
+    users = report.active_users do |r|
+      r.signed_up_since signed_up_date
+      r.include_staff false
+    end
+
+    users.count
+  end
+
   def active_users(first_date, last_date)
     users = report.active_users do |r|
       r.active_range first_date..last_date
@@ -60,6 +71,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
 
     posts.count
+  end
+
+  def pages_read(first_date, last_date)
+    pages = report.pages_read do |r|
+      r.active_range first_date..last_date
+    end
+
+    pages.count
   end
 
   def top_non_staff_users(signed_up_date, limit)
