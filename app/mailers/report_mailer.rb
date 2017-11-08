@@ -22,6 +22,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       most_liked_posts: most_liked_posts(first_date, last_date, limit),
       most_replied_topics: most_replied_topics(first_date, last_date, limit),
       active_responders: active_responders(first_date, last_date, limit),
+      # todo: change name
+      repeat_new_users: repeat_new_users(first_date, last_date),
 
       active_users: active_users(first_date, last_date),
       posts_made: posts_made(first_date, last_date),
@@ -55,6 +57,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
 
     users.count
+  end
+
+  def repeat_new_users(first_date, last_date)
+    users = report.repeat_new_users do |r|
+      r.active_range first_date..last_date
+    end
+
+    users
   end
 
   def active_users(first_date, last_date)
