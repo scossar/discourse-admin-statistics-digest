@@ -29,6 +29,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       posts_made: posts_made(first_date, last_date),
       pages_read: pages_read(first_date, last_date),
       new_users: new_users(first_date),
+      dau: daily_active_users(first_date, last_date),
 
       title: subject,
       subject: subject,
@@ -65,6 +66,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
 
     users.count
+  end
+
+  def daily_active_users(first_date, last_date)
+    users = report.daily_active_users do |r|
+      r.active_range first_date..last_date
+    end
+
+    users
   end
 
   def active_users(first_date, last_date)
