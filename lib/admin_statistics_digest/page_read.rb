@@ -8,7 +8,7 @@ class AdminStatisticsDigest::PageRead < AdminStatisticsDigest::BaseReport
     super
   end
 
-  # Todo: maybe this only needs to return the count?
+  # Todo: this is the wrong query!!!
   def to_sql
     posts = Post.where(created_at: filters.active_range.first..filters.active_range.last)
     posts.to_sql

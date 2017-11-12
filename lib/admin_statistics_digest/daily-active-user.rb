@@ -10,7 +10,7 @@ class AdminStatisticsDigest::DailyActiveUser < AdminStatisticsDigest::BaseReport
 
   def to_sql
     <<~SQL
-SELECT count("user_visits"."user_id") as visits,
+SELECT count("user_visits"."user_id") as visits
 FROM "user_visits"
 WHERE "user_visits"."visited_at" >= '#{filters.active_range.first.beginning_of_day}' AND "user_visits"."visited_at" <= '#{filters.active_range.last.end_of_day}'
     SQL

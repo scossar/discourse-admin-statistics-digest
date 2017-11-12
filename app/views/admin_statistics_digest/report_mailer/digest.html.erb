@@ -1,128 +1,147 @@
-<!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
-<head></head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+  <meta http-equiv="Content-type" name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width">
+  <title></title>
+</head>
+
+<body dir="<%= rtl? ? 'rtl' : 'ltr' %>" style="-moz-box-sizing:border-box;-ms-text-size-adjust:100%;-webkit-box-sizing:border-box;-webkit-text-size-adjust:100%;box-sizing:border-box;color:#0a0a0a;font-family:Helvetica,Arial,sans-serif;font-size:14px;font-weight:400;line-height:1.3;margin:0;min-width:100%;padding:0;text-align:<%= rtl? ? 'right' : 'left' %>;width:100%">
 
 
-<h3>Top new registered users</h3>
-<% if @data[:top_new_registered_users].present? %>
-    <ol>
-      <%- @data[:top_new_registered_users].each do |user| %>
-          <li>
-            <%= user['username'] %>
-          </li>
-      <% end %>
-    </ol>
-<% else %>
-    <li>No data yet</li>
-<% end %>
+<!--[if mso]>
+<style type="text/css">
+  body, table, td, th, h1, h2, h3 {
+    font-family: Helvetica, Arial, sans-serif !important;
+  }
+</style>
+<![endif]-->
 
-<h3>Top non staff users</h3>
-<% if @data[:top_non_staff_users].present? %>
-    <ol>
-      <%- @data[:top_non_staff_users].each do |user| %>
-          <li>
-            <%= user['username'] %>
-          </li>
-      <% end %>
-    </ol>
-<% end %>
+<span class="preheader" style="display:none!important;color:#f3f3f3;font-size:1px;line-height:1px;max-height:0;max-width:0;mso-hide:all!important;opacity:0;overflow:hidden;visibility:hidden">
+  <!-- something goes here -->
+</span>
 
-<h3>Leaving out demoted regulars field</h3>
+<!-- header -->
+<table dir="<%= rtl? ? 'rtl' : 'ltr' %>" style="background-color:#<%= @data['header_bgcolor'] -%>;width:100%;">
+  <tr>
+    <td align="center" style="text-align: center;padding: 20px 0; font-family:Helvetica,Arial,sans-serif;">
 
-<h3>popular posts</h3>
-<% if @data[:popular_posts].present? %>
-    <ol>
-      <%- @data[:popular_posts].each do |post| %>
-          <li>
-            Post ID: <%= post['id'] %>
-          </li>
-      <% end %>
-    </ol>
-<% end %>
+      <a href="<%= Discourse.base_url %>" style="color:#<%= @data['header_color'] -%>;font-size:22px;text-decoration:none;">
+        <%- if logo_url.blank? %>
+            <%= SiteSetting.title %>
+        <%- else %>
+            <img src="<%= logo_url %>" height="40" style="clear:both;display:block;height:40px;margin:auto;max-width:100%;outline:0;text-decoration:none;" alt="<%= SiteSetting.title %>">
+        <%- end %>
+      </a>
 
-<h3>Most liked posts</h3>
-<% if @data[:most_liked_posts].present? %>
-    <ol>
-      <%- @data[:most_liked_posts].each do |post| %>
-          <li>
-            Post ID: <%= post['id'] %>
-          </li>
-      <% end %>
-    </ol>
-<% end %>
+    </td>
+  </tr>
+</table>
 
-<h3>Most replied topics</h3>
-<% if @data[:most_replied_topics].present? %>
-    <ol>
-      <%- @data[:most_replied_topics].each do |topic| %>
-          <li>
-            <%= topic['title'] %>
-          </li>
-      <% end %>
-    </ol>
-<% end %>
+<!-- body outer -->
+<table dir="<%= rtl? ? 'rtl' : 'ltr' %>" class="body" style="width:100%;background:#f3f3f3;padding:0;border-spacing:0;font-family:Helvetica,Arial,sans-serif;font-size:14px;font-weight:200;line-height:1.3;vertical-align:top;">
+  <!-- header metadata outer row -->
+  <tr>
 
-<h3>Active Users</h3>
-<% if @data[:active_users].present? %>
-<%= @data[:active_users] %>
-<% else %>
-active users data not yet added
-<% end %>
+    <!-- left side spacer -->
+    <td class="side-spacer" style="width:5%;vertical-align:top;padding:0;">
+      <div class="with-accent-colors" style="background-color: #2F70AC; color: #FFFFFF;">
+        <table dir="ltr" class="spacer" style="border-spacing:0;padding:0;width:100%">
+          <tbody>
+          <tr>
+            <td height="400px" style="height:400px;border-collapse:collapse!important;margin:0;mso-line-height-rule:exactly;padding:0;">&nbsp;</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </td>
+
+    <!-- header metadata td -->
+    <td style="vertical-align:top;padding:0;font-family:Helvetica,Arial,sans-serif;">
+      <!-- header metadata -->
+      <table dir="<%= rtl? ? 'rtl' : 'ltr' %>" align="center" class="with-accent-colors" style="background-color: #2F70AC; color: #FFFFFF;; border-spacing:0;margin:0;padding:0;text-align:inherit;vertical-align:top;width:100%">
+        <tbody>
+        <tr>
+          <td style="border-collapse:collapse!important;color:#0a0a0a;line-height:1.3;margin:0;padding:0;text-align:<%= rtl? ? 'right' : 'left' %>;vertical-align:top;word-wrap:normal">
+
+            <br/>
+            <center class="with-accent-colors" style="background-color: #2F70AC; color: #FFFFFF; font-size:22px;font-weight:400;">Key
+              stats this month
+            </center>
+
+            <table dir="<%= rtl? ? 'rtl' : 'ltr' %>" style="table-layout:fixed;margin:10px 0 20px 0;padding:0;vertical-align:top;width:100%">
+              <tbody>
+              <tr>
+                <%- @data[:counts].each do |count| -%>
+                    <td style="text-align:center;font-size:36px; font-weight: bold; background-color: #2F70AC; color: #FFFFFF;">
+                      <strong><%= count[:value] -%></strong>
+                    </td>
+                <%- end -%>
+              </tr>
+              <tr>
+                <%- @data[:counts].each do |count| -%>
+                    <td style="font-size:14px;font-weight:bold;text-align:center; background-color: #2F70AC; color: #FFFFFF;">
+                      <strong><%= count[:label_key] -%></strong>
+                    </td>
+                <%- end -%>
+              </tr>
+              </tbody>
+            </table>
+
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </td><!-- end of header metadata td -->
+
+    <!-- body content -->
+    <td>
+      <table dir="<%= rtl? ? 'rtl' : 'ltr' %>" style=" border-spacing:0;margin:0;padding:0;text-align:inherit;vertical-align:top;">
+        <!-- body outer row -->
+        <tr>
+          <!-- main content td -->
+          <td style="vertical-align:top;padding:0;font-family:Helvetica,Arial,sans-serif;">
+            <table dir="<%= rtl? ? 'rtl' : 'ltr' %>" align="center" style="border-spacing:0;background:#fefefe;margin:0;padding:0;text-align:center;vertical-align:top;">
+              <tbody>
+              <tr>
+                <td style="-moz-hyphens:auto;-webkit-hyphens:auto;border-collapse:collapse!important;color:#0a0a0a;hyphens:auto;line-height:1.3;margin:0;padding:0;text-align:<%= rtl? ? 'right' : 'left' %>;vertical-align:top;word-wrap:normal">
+
+                  <!-- beginning of Users -->
+                  <table dir="<%= rtl? ? 'rtl' : 'ltr' %>">
+                    <tbody>
+                    <tr>
+                      <td>
+                        <center style="font-size:22px;font-weight:400;">Users</center>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table><!-- end of Users -->
+                </td>
+              </tr>
+              </tbody>
+            </table>
+
+          </td><!-- end of main content td -->
+        </tr><!-- end of body outer row -->
+      </table>
+    </td>
+
+    <!-- right side spacer -->
+    <td class="side-spacer" style="width:5%;vertical-align:top;padding:0;">
+      <div class="with-accent-colors" style="background-color: #2F70AC; color: #FFFFFF;">
+        <table dir="ltr" class="spacer" style="border-spacing:0;padding:0;width:100%">
+          <tbody>
+          <tr>
+            <td height="400px" style="height:400px;border-collapse:collapse!important;margin:0;mso-line-height-rule:exactly;padding:0;">&nbsp;</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </td><!-- end of right spacer -->
+
+  </tr><!-- end of outer row -->
 
 
-<h3>Posts Made</h3>
-<% if @data[:posts_made].present? %>
-    <%= @data[:posts_made] %>
-<% else %>
-    posts made data not yet added
-<% end %>
-
-<h3>Pages Read</h3>
-This is returning the wrong data... I'll get back to it
-<% if @data[:pages_read].present? %>
-    <%= @data[:pages_read] %>
-<% else %>
-    pages read data not yet added
-<% end %>
-
-<h3>New Users</h3>
-<% if @data[:new_users].present? %>
-    <%= @data[:new_users] %>
-<% else %>
-    new users data not yet added
-<% end %>
-
-<h3>New repeat visitors</h3>
-<% if @data[:repeat_new_users].present? %>
-    <%= @data[:repeat_new_users] %>
-<% else %>
-    new repeat visitors data not yet added
-<% end %>
-
-<h3>Average Daily Active Users (DAU)</h3>
-<% if @data[:dau].present? %>
-    <%= @data[:dau] %>
-<% else %>
-    dau data not yet added
-<% end %>
-
-<h3>Monthly Active Users (MAU)</h3>
-<% if @data[:mau].present? %>
-    <%= @data[:mau] %>
-<% else %>
-    mau data not yet added
-<% end %>
-
-<h3>Health (dau/mau)</h3>
-<% if @data[:health].present? %>
-    <%= @data[:health] %>
-<% else %>
-    health data not yet added
-<% end %>
-
-
-
-
-
+</table>
 </body>
 </html>
