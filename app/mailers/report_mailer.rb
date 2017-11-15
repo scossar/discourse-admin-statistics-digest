@@ -10,8 +10,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   def digest(first_date, last_date)
 
-    logo_url = SiteSetting.logo_url
-    logo_url = logo_url.include?('http') ? logo_url : Discourse.base_url + logo_url
+    #logo_url = SiteSetting.logo_url
+    #logo_url = logo_url.include?('http') ? logo_url : Discourse.base_url + logo_url
     report_date = "#{first_date.to_s(:short)} - #{last_date.to_s(:short)} #{last_date.strftime('%Y')}"
     subject = "Discourse Admin Statistic Report #{report_date}"
 
@@ -37,7 +37,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
       title: subject,
       subject: subject,
-      logo_url: logo_url,
+      #logo_url: logo_url,
       report_date: report_date
     }
 
@@ -50,6 +50,30 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     def dir_for_locale
       rtl? ? 'rtl' : 'ltr'
     end
+
+    def logo_url
+      logo_url = SiteSetting.digest_logo_url
+      logo_url = SiteSetting.logo_url if logo_url.blank? || logo_url =~ /\.svg$/i
+
+      return nil if logo_url.blank? || logo_url =~ /\.svg$/i
+      if logo_url !~ /http(s)?\:\/\//
+        logo_url = "#{Discourse.base_url}#{logo_url}"
+      end
+      logo_url
+    end
+
+    def header_color
+      ColorScheme.hex_for_name('header_primary')
+    end
+
+    def header_bgcolor
+      ColorScheme.hex_for_name('header_background')
+    end
+
+    def anchor_color
+      ColorScheme.hex_for_name('tertiary')
+    end
+
   end
 
   private
