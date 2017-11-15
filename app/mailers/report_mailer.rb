@@ -74,6 +74,10 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       ColorScheme.hex_for_name('tertiary')
     end
 
+    def report_date
+      "Oct 2017"
+    end
+
   end
 
   private
