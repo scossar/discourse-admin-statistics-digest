@@ -66,6 +66,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       logo_url
     end
 
+    # todo: add '#' to hex value
     def header_color
       ColorScheme.hex_for_name('header_primary')
     end
@@ -84,6 +85,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
     def digest_title
       "#{I18n.t( 'admin_statistics_digest.title')} #{report_date}"
+    end
+
+    def highlight_bgcolor
+      '#2F70AC'
+    end
+
+    def highlight_color
+      '#ffffff'
     end
 
   end
