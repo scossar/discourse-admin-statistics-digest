@@ -10,10 +10,13 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   def digest(first_date, last_date)
 
-    #logo_url = SiteSetting.logo_url
-    #logo_url = logo_url.include?('http') ? logo_url : Discourse.base_url + logo_url
     report_date = "#{first_date.to_s(:short)} - #{last_date.to_s(:short)} #{last_date.strftime('%Y')}"
     subject = "Discourse Admin Statistic Report #{report_date}"
+    header_metadata = [
+      {key: 'admin_statistics_digest.active_users', value: active_users},
+      {key: 'admin_statistics_digest.posts_made', value: posts_made},
+      {key: 'admin_statistics_digest.posts_read', value: posts_read}
+    ]
 
     limit = 5
     @data = {
@@ -26,6 +29,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       most_replied_topics: most_replied_topics(first_date, last_date, limit),
       active_responders: active_responders(first_date, last_date, limit),
 
+      header_metadata: header_metadata,
       active_users: active_users,
       posts_made: posts_made,
       posts_read: posts_read,
@@ -37,7 +41,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
       title: subject,
       subject: subject,
-      #logo_url: logo_url,
       report_date: report_date
     }
 
