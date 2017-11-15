@@ -5,7 +5,7 @@
     <title><%= @data[:title] %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    <!-- todo: add styles inline as you go. Keep the .content media query -->
+    <!-- todo: add styles inline as you go. Keep the .content media query. Add !important to font-family? -->
     <style type="text/css">
       table[align="center"] {
         margin: 0 auto;
@@ -26,7 +26,7 @@
 <body style="margin:0;padding:0;min-width:100% !important;background-color:#ffffff;">
 
 <!-- outer table -->
-<table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #ffffff;border-collapse:collapse;">
+<table dir="<%= dir_for_locale %>" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #ffffff;border-collapse:collapse;">
     <tr>
         <td>
             <!-- inner table (with conditional table for Outlook) -->
@@ -40,6 +40,7 @@
                 <tr>
                     <td>
                         this is a test
+                        <%=t 'user_notifications.digest.popular_topics' %>
                     </td>
                 </tr>
 
