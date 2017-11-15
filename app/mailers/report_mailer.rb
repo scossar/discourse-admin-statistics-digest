@@ -78,6 +78,10 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       "Oct 2017"
     end
 
+    def digest_title
+      "#{I18n.t( 'admin_statistics_digest.title')} #{report_date}"
+    end
+
   end
 
   private
