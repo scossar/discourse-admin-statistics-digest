@@ -1,6 +1,9 @@
 class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   include Rails.application.routes.url_helpers
+  include ApplicationHelper
+  helper :application
+  default charset: 'UTF-8'
 
   append_view_path Rails.root.join('plugins', 'discourse-admin-statistics-digest', 'app', 'views')
   default from: SiteSetting.notification_email
@@ -41,6 +44,12 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     admin_emails = User.where(admin: true).map(&:email).select {|e| e.include?('@') }
 
     mail(to: admin_emails, subject: subject)
+  end
+
+  ApplicationHelper.class_eval do
+    def dir_for_locale
+      rtl? ? 'rtl' : 'ltr'
+    end
   end
 
   private
