@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title><%= @data[:title] %></title>
+    <title><%= digest_title %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     <!-- todo: add styles inline as you go. Keep the .content media query. Add !important to font-family? -->
@@ -55,7 +55,7 @@
                 <!-- header title row -->
                 <tr>
                     <td style="padding:24px 0 12px 0;background-color:#2F70AC;color:#FFFFFF;font-size:22px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;text-align: center">
-                        <strong>Key statistics for <%= report_date -%></strong>
+                        <strong><%= digest_title -%> <%= report_date -%></strong>
                     </td>
                 </tr><!-- end of header title row -->
 
