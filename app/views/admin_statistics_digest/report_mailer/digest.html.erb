@@ -37,13 +37,22 @@
                 <td>
             <![endif]-->
             <table class="content" align="center" border="0" cellpadding="0" cellspacing="0" style="margin:0 auto;border-collapse:collapse;width:100%;max-width:600px;background-color:#eeeeee">
-                <tr>
-                    <td>
-                        this is a test
-                        <%=t 'user_notifications.digest.popular_topics' %>
-                    </td>
-                </tr>
+                <!-- email content starts here -->
 
+                <!-- logo row -->
+                <tr>
+                    <td style="padding:24px 0 24px 0;background-color:#<%= header_bgcolor -%>;color:#<%= header_color -%>;font-size:22px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;text-align:center;margin:0 auto;">
+                        <a href="<%= Discourse.base_url %>" style="color:#<%= header_color -%>;font-size:22px;text-decoration:none;">
+                            <%- if logo_url.blank? %>
+                                <%= SiteSetting.title %>
+                            <%- else %>
+                                <img src="<%= logo_url %>" height="40" style="clear:both;display:block;height:40px;margin:auto;max-width:100%;outline:0;text-decoration:none;" alt="<%= SiteSetting.title %>">
+                            <%- end %>
+                        </a>
+                    </td>
+                </tr><!-- end of logo row -->
+
+                <!-- email content ends here -->
             </table><!-- end of inner table -->
             <!--[if (gte mso 9)|(IE)]>
             </td>
