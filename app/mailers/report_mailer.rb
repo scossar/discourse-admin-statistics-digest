@@ -46,6 +46,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     mail(to: admin_emails, subject: subject)
   end
 
+  # Todo: is this a good idea? These methods should only be available in the plugin code.
   ApplicationHelper.class_eval do
     def dir_for_locale
       rtl? ? 'rtl' : 'ltr'
