@@ -23,6 +23,15 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       most_replied_topics: most_replied_topics(first_date, last_date, limit),
       active_responders: active_responders(first_date, last_date, limit),
 
+      active_users: active_users,
+      posts_made: posts_made,
+      posts_read: posts_read,
+      new_users: new_users,
+      repeat_new_users: repeat_new_users,
+      dau: daily_active_users,
+      mau: monthly_active_users,
+      health: health,
+
       title: subject,
       subject: subject,
       logo_url: logo_url,
@@ -35,6 +44,43 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   end
 
   private
+
+  # stubbed methods
+
+  def active_users
+    2456
+  end
+
+  def posts_made
+    654
+  end
+
+  def posts_read
+    2473
+  end
+
+  def new_users
+    147
+  end
+
+  def repeat_new_users
+    76
+  end
+
+  def daily_active_users
+    273
+  end
+
+  def monthly_active_users
+    769
+  end
+
+  def health
+    daily_active_users / monthly_active_users
+  end
+
+  # end of stubbed methods
+
   def top_new_registered_users(signed_up_date, limit)
     report.active_users do |r|
       r.signed_up_since signed_up_date
