@@ -3,4 +3,8 @@ en:
     admin_statistics_digest: "Send Site Statistics for each month"
   admin_statistics_digest:
     title: "Key statistics for"
+    active_users: "active users"
+    posts_made: "posts made"
+    posts_read: "posts read"
+    new_users: "new users"
 
