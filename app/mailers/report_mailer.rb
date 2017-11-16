@@ -68,23 +68,23 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
     # todo: add '#' to hex value
     def header_color
-      ColorScheme.hex_for_name('header_primary')
+      "##{ColorScheme.hex_for_name('header_primary')}"
     end
 
     def header_bgcolor
-      ColorScheme.hex_for_name('header_background')
+      "##{ColorScheme.hex_for_name('header_background')}"
     end
 
     def anchor_color
-      ColorScheme.hex_for_name('tertiary')
+      "##{ColorScheme.hex_for_name('tertiary')}"
     end
 
-    def report_date
-      "Oct 2017"
+    def bg_color
+      '#eeeeee'
     end
 
-    def digest_title
-      "#{I18n.t( 'admin_statistics_digest.title')} #{report_date}"
+    def text_color
+      '#222222'
     end
 
     def highlight_bgcolor
@@ -93,6 +93,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
     def highlight_color
       '#ffffff'
+    end
+
+    def report_date
+      "Oct 2017"
+    end
+
+    def digest_title
+      "#{I18n.t( 'admin_statistics_digest.title')} #{report_date}"
     end
 
   end
