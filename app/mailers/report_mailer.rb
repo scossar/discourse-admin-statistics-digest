@@ -95,6 +95,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       '#ffffff'
     end
 
+    def body_bgcolor
+      '#ffffff'
+    end
+
+    def body_color
+      '#222222'
+    end
+
     def report_date
       "Oct 2017"
     end
