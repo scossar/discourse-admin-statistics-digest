@@ -5,6 +5,10 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   helper :application
   default charset: 'UTF-8'
 
+  helper_method :dir_for_locale, :logo_url, :header_color, :header_bgcolor, :anchor_color,
+                :bg_color, :text_color, :highlight_bgcolor, :highlight_color, :body_bgcolor,
+                :body_color, :report_date, :digest_title
+
   append_view_path Rails.root.join('plugins', 'discourse-admin-statistics-digest', 'app', 'views')
   default from: SiteSetting.notification_email
 
@@ -44,73 +48,72 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       report_date: report_date
     }
 
-    admin_emails = User.where(admin: true).map(&:email).select {|e| e.include?('@') }
+    admin_emails = User.where(admin: true).map(&:email).select {|e| e.include?('@')}
 
     mail(to: admin_emails, subject: subject)
   end
 
-  # Todo: is this a good idea? These methods should only be available in the plugin code.
-  ApplicationHelper.class_eval do
-    def dir_for_locale
-      rtl? ? 'rtl' : 'ltr'
+
+  # helper methods
+
+  def dir_for_locale
+    rtl? ? 'rtl' : 'ltr'
+  end
+
+  def logo_url
+    logo_url = SiteSetting.digest_logo_url
+    logo_url = SiteSetting.logo_url if logo_url.blank? || logo_url =~ /\.svg$/i
+
+    return nil if logo_url.blank? || logo_url =~ /\.svg$/i
+    if logo_url !~ /http(s)?\:\/\//
+      logo_url = "#{Discourse.base_url}#{logo_url}"
     end
+    logo_url
+  end
 
-    def logo_url
-      logo_url = SiteSetting.digest_logo_url
-      logo_url = SiteSetting.logo_url if logo_url.blank? || logo_url =~ /\.svg$/i
+  # todo: add '#' to hex value
+  def header_color
+    "##{ColorScheme.hex_for_name('header_primary')}"
+  end
 
-      return nil if logo_url.blank? || logo_url =~ /\.svg$/i
-      if logo_url !~ /http(s)?\:\/\//
-        logo_url = "#{Discourse.base_url}#{logo_url}"
-      end
-      logo_url
-    end
+  def header_bgcolor
+    "##{ColorScheme.hex_for_name('header_background')}"
+  end
 
-    # todo: add '#' to hex value
-    def header_color
-      "##{ColorScheme.hex_for_name('header_primary')}"
-    end
+  def anchor_color
+    "##{ColorScheme.hex_for_name('tertiary')}"
+  end
 
-    def header_bgcolor
-      "##{ColorScheme.hex_for_name('header_background')}"
-    end
+  def bg_color
+    '#eeeeee'
+  end
 
-    def anchor_color
-      "##{ColorScheme.hex_for_name('tertiary')}"
-    end
+  def text_color
+    '#222222'
+  end
 
-    def bg_color
-      '#eeeeee'
-    end
+  def highlight_bgcolor
+    '#2F70AC'
+  end
 
-    def text_color
-      '#222222'
-    end
+  def highlight_color
+    '#ffffff'
+  end
 
-    def highlight_bgcolor
-      '#2F70AC'
-    end
+  def body_bgcolor
+    '#ffffff'
+  end
 
-    def highlight_color
-      '#ffffff'
-    end
+  def body_color
+    '#222222'
+  end
 
-    def body_bgcolor
-      '#ffffff'
-    end
+  def report_date
+    "Oct 2017"
+  end
 
-    def body_color
-      '#222222'
-    end
-
-    def report_date
-      "Oct 2017"
-    end
-
-    def digest_title
-      "#{I18n.t( 'admin_statistics_digest.title')} #{report_date}"
-    end
-
+  def digest_title
+    "#{I18n.t('admin_statistics_digest.title')} #{report_date}"
   end
 
   private
@@ -195,9 +198,9 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
 
     [
-      active_2_months_ago.map {|s| { user_id: s['user_id'], username: s['username'], name: s['name'] }.with_indifferent_access },
-      active_1_months_ago.map {|s| { user_id: s['user_id'], username: s['username'], name: s['name'] }.with_indifferent_access }
-    ].flatten.uniq - this_month.map {|s| { user_id: s['user_id'], username: s['username'], name: s['name'] }.with_indifferent_access }
+      active_2_months_ago.map {|s| {user_id: s['user_id'], username: s['username'], name: s['name']}.with_indifferent_access},
+      active_1_months_ago.map {|s| {user_id: s['user_id'], username: s['username'], name: s['name']}.with_indifferent_access}
+    ].flatten.uniq - this_month.map {|s| {user_id: s['user_id'], username: s['username'], name: s['name']}.with_indifferent_access}
   end
 
   def popular_posts(first_date, last_date, limit)
@@ -238,9 +241,9 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       end
 
       result.push({
-        category_name: Category.find(category_id).name,
-        responders: responders
-      }.with_indifferent_access)
+                    category_name: Category.find(category_id).name,
+                    responders: responders
+                  }.with_indifferent_access)
     end
     result
   end
