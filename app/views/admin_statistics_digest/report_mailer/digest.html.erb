@@ -95,34 +95,35 @@
                     </td>
                 </tr><!-- end of horizontal spacer row -->
 
-                <!-- health section  todo: make sure the properties exist -->
-                <% if @data[:health_data].present? %>
-                    <!-- health title (blue padding) -->
+                <!-- data loop -->
+                <% @data[:data_array].each_with_index do |obj, outer_count| -%>
+
+                    <!-- title section -->
                     <tr>
                         <td style="background-color:<%= body_bgcolor -%>; color:<%= body_color -%>;font-size:22px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;">
                             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
                                 <tr>
-                                    <td class="highlight-side-spacer" style="background-color:<%= highlight_bgcolor -%>;">
+                                    <td class="highlight-side-spacer" style="background-color:<%= spacer_color outer_count -%>;">
                                         &nbsp;
                                     </td>
                                     <td style="padding: 24px 0 24px 0; background-color:<%= body_bgcolor -%>; color:<%= body_color -%>;font-size:22px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;text-align: center">
-                                        <%= t @data[:health_data][:title_key] -%>
+                                        <%= t obj[:title_key] -%>
                                     </td>
-                                    <td class="highlight-side-spacer" style="background-color:<%= highlight_bgcolor -%>;">
+                                    <td class="highlight-side-spacer" style="background-color:<%= spacer_color outer_count -%>;">
                                         &nbsp;
                                     </td>
                                 </tr>
                             </table>
                         </td>
-                    </tr>
+                    </tr><!-- end of title section -->
 
-                    <% @data[:health_data][:fields].each_with_index do |field, i| %>
+                    <% obj[:fields].each_with_index do |field, inner_count| %>
                         <!-- content data row (blue spacer) -->
                         <tr>
                             <td style="background-color: #ffffff; color: #222222;font-size:18px;font-weight:400;font-family:Helvetica,Arial,sans-serif;">
                                 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
                                     <tr>
-                                        <td class="highlight-side-spacer" style="background-color:<%= i == 0 ? highlight_bgcolor : bg_color  -%>;">
+                                        <td class="highlight-side-spacer" style="background-color:<%= spacer_color(outer_count, inner_count)  -%>;">
                                             &nbsp;
                                         </td>
                                         <td>
@@ -142,12 +143,11 @@
                                                 <% end %>
                                             </table><!-- end of inner content table -->
                                         </td>
-                                        <td class="highlight-side-spacer" style="background-color:<%= i == 0 ? highlight_bgcolor : bg_color  -%>;">&nbsp;</td>
+                                        <td class="highlight-side-spacer" style="background-color:<%= spacer_color(outer_count, inner_count) -%>;">&nbsp;</td>
                                     </tr>
                                 </table>
                             </td>
                         </tr><!-- end of content data row -->
-
                     <% end %>
 
                     <!-- horizontal spacer row (gray) -->
@@ -157,9 +157,7 @@
                         </td>
                     </tr><!-- end of horizontal spacer row -->
 
-                <% end %><!-- end of data-present conditional -->
-
-
+                    <% end -%><!-- end of data loop -->
 
 
                 <!-- email content ends here -->
