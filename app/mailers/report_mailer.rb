@@ -7,7 +7,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   helper_method :dir_for_locale, :logo_url, :header_color, :header_bgcolor, :anchor_color,
                 :bg_color, :text_color, :highlight_bgcolor, :highlight_color, :body_bgcolor,
-                :body_color, :report_date, :digest_title
+                :body_color, :report_date, :digest_title, :spacer_color
 
   append_view_path Rails.root.join('plugins', 'discourse-admin-statistics-digest', 'app', 'views')
   default from: SiteSetting.notification_email
@@ -32,6 +32,19 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       ]
     }
 
+    post_data = {
+      title_key: 'admin_statistics_digest.posts_data_title',
+      fields: [
+        {key: 'admin_statistics_digest.posts_made', value: posts_made},
+        {key: 'admin_statistics_digest.posts_read', value: posts_read}
+      ]
+    }
+
+    data_array = [
+      health_data,
+      post_data
+    ]
+
     limit = 5
     @data = {
       top_new_registered_users: top_new_registered_users(first_date, limit),
@@ -52,7 +65,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       dau: daily_active_users,
       mau: monthly_active_users,
       health: health,
-      health_data: health_data,
+      #health_data: health_data,
+      data_array: data_array,
 
       title: subject,
       subject: subject,
@@ -66,6 +80,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
 
   # helper methods
+  # todo: can these be moved to a concern?
 
   def dir_for_locale
     rtl? ? 'rtl' : 'ltr'
@@ -125,6 +140,10 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   def digest_title
     "#{I18n.t('admin_statistics_digest.title')} #{report_date}"
+  end
+
+  def spacer_color(outer_count, inner_count = 0)
+    outer_count == 0 && inner_count == 0 ? highlight_bgcolor : bg_color
   end
 
   private
