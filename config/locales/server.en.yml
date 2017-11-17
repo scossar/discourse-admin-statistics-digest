@@ -7,5 +7,9 @@ en:
     posts_made: "posts made"
     posts_read: "posts read"
     new_users: "new users"
-    community_health: "Community Health"
+    community_health_title: "Community Health"
+    daily_active_users: "daily active users"
+    monthly_active_users: "monthly active users"
+    dau_mau: "DAU/MAU"
+    dau_mau_description: "Daily active users over monthly active users is a measure of how sticky your community is. Aim for 30% or above."
 
