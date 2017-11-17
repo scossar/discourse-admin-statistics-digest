@@ -22,6 +22,16 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       {key: 'admin_statistics_digest.posts_read', value: posts_read}
     ]
 
+    health_data = {
+      title_key: 'admin_statistics_digest.community_health_title',
+      fields: [
+        {key: 'admin_statistics_digest.daily_active_users', value: daily_active_users},
+        {key: 'admin_statistics_digest.monthly_active_users', value: monthly_active_users},
+        {key: 'admin_statistics_digest.dau_mau', value: health,
+         description: 'admin_statistics_digest.dau_mau_description'}
+      ]
+    }
+
     limit = 5
     @data = {
       top_new_registered_users: top_new_registered_users(first_date, limit),
@@ -42,6 +52,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       dau: daily_active_users,
       mau: monthly_active_users,
       health: health,
+      health_data: health_data,
 
       title: subject,
       subject: subject,
