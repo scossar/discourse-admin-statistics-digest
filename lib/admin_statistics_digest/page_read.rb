@@ -9,12 +9,13 @@ class AdminStatisticsDigest::PageRead < AdminStatisticsDigest::BaseReport
     super
   end
 
-  # Todo: maybe this only needs to return the count?
+  # puts "MONTHS AGO #{filters.months_ago[:from]}"
+
   def to_sql
-    puts "MONTHS AGO #{filters.months_ago[:from]}"
-    #posts = Post.where(created_at: filters.months_ago.first..filters.months_ago.last)
-    posts = Post.all
-    posts.to_sql
+    <<~SQL
+SELECT sum("uv"."posts_read")
+FROM "user_visits" "uv"
+    SQL
   end
 
 end

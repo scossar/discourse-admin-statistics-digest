@@ -15,14 +15,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   def digest(first_date, last_date)
 
     # todo: just temporary for now
-    #months_ago = 0
+    months_ago = 0
 
     report_date = "#{first_date.to_s(:short)} - #{last_date.to_s(:short)} #{last_date.strftime('%Y')}"
     subject = "Discourse Admin Statistic Report #{report_date}"
     header_metadata = [
       {key: 'admin_statistics_digest.active_users', value: active_users},
       {key: 'admin_statistics_digest.posts_made', value: posts_made},
-      {key: 'admin_statistics_digest.posts_read', value: posts_read(1)}
+      {key: 'admin_statistics_digest.posts_read', value: posts_read(months_ago)}
     ]
 
     health_data = {
@@ -39,7 +39,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       title_key: 'admin_statistics_digest.posts_data_title',
       fields: [
         {key: 'admin_statistics_digest.posts_made', value: posts_made},
-        {key: 'admin_statistics_digest.posts_read', value: pages_read(1)}
+        {key: 'admin_statistics_digest.posts_read', value: posts_read(months_ago)}
       ]
     }
 
@@ -62,7 +62,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       header_metadata: header_metadata,
       active_users: active_users,
       posts_made: posts_made,
-      posts_read: pages_read(1),
+      posts_read: posts_read(months_ago),
       new_users: new_users,
       repeat_new_users: repeat_new_users,
       dau: daily_active_users,
@@ -170,9 +170,12 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   end
 
   def posts_read(months_ago)
-    report.posts_read do |r|
+    posts = report.posts_read do |r|
       r.months_ago months_ago
     end
+    puts "POSTSREAD #{posts}"
+    # todo: check for errors
+    posts[0]['posts_read']
   end
 
   def new_users
