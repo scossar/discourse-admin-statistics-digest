@@ -8,6 +8,7 @@ class AdminStatisticsDigest::ActiveUser < AdminStatisticsDigest::BaseReport
   provide_filter :signed_up_between
   provide_filter :active_range
   provide_filter :limit
+  provide_filter :months_ago
 
   def initialize
     super
@@ -15,6 +16,15 @@ class AdminStatisticsDigest::ActiveUser < AdminStatisticsDigest::BaseReport
   end
 
   def to_sql
+    months_ago_filter = if filters.months_ago
+                                  <<~SQL
+                                  AND (
+                                     ("created_at", "created_at") OVERLAPS('#{filters.months_ago[:period_start]}', '#{filters.months_ago[:period_end]}')
+                                   )
+SQL
+                                else
+                                  nil
+                                end
     include_staff_filter = if filters.include_staff
                              nil # include all users
                            else
@@ -88,6 +98,7 @@ class AdminStatisticsDigest::ActiveUser < AdminStatisticsDigest::BaseReport
                     #{ signed_up_before_filter }
                     #{ signed_up_after_filter }
                     #{ signed_up_between_filter }
+                    #{ months_ago_filter }
                     ORDER BY "created_at" DESC
 
              ) as u ON t."user_id" = u."user_id"
