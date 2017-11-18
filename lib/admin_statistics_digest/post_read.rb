@@ -9,8 +9,8 @@ class AdminStatisticsDigest::PostRead < AdminStatisticsDigest::BaseReport
     <<~SQL
 SELECT sum("uv"."posts_read") AS "posts_read"
 FROM "user_visits" "uv"
-WHERE "uv"."visited_at" >= '#{filters.months_ago[:from]}'
-AND "uv"."visited_at" <= '#{filters.months_ago[:to]}'
+WHERE "uv"."visited_at" >= '#{filters.months_ago[:period_start]}'
+AND "uv"."visited_at" <= '#{filters.months_ago[:period_end]}'
     SQL
   end
 

@@ -14,12 +14,12 @@ class Filter
   end
 
   def months_ago(num_months = nil)
-    filter[:datetime_range] = {from: num_months.month.ago.beginning_of_month, to: num_months.month.ago.end_of_month } if num_months
+    filter[:datetime_range] = {period_start: num_months.month.ago.beginning_of_month, period_end: num_months.month.ago.end_of_month } if num_months
     filter[:datetime_range]
   end
 
   def datetime_range(from: nil, to: nil)
-    filter[:datetime_range] = { from: from, to: to } if (from && to)
+    filter[:datetime_range] = { period_start: from, period_end: to } if (from && to)
     filter[:datetime_range]
   end
 

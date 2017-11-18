@@ -14,8 +14,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   def digest(first_date, last_date)
 
-    # todo: just temporary for now
     months_ago = 0
+
+    # testing active_user query
+    active = active(months_ago)
+    puts "ACTIVE #{active}"
+
+    # todo: just temporary for now
+
 
     report_date = "#{first_date.to_s(:short)} - #{last_date.to_s(:short)} #{last_date.strftime('%Y')}"
     subject = "Discourse Admin Statistic Report #{report_date}"
@@ -161,14 +167,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     654
   end
 
-  def pages_read(num_months_ago)
-    pages = report.pages_read do |r|
-      r.months_ago(num_months_ago)
-    end
-
-    pages.count
-  end
-
   def posts_read(months_ago)
     posts = report.posts_read do |r|
       r.months_ago months_ago
@@ -205,6 +203,12 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.signed_up_since signed_up_date
       r.include_staff false
       r.limit limit
+    end
+  end
+
+  def active(months_ago)
+    report.active_users do |r|
+      r.months_ago months_ago
     end
   end
 
