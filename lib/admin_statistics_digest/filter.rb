@@ -13,6 +13,14 @@ class Filter
     filter.to_h.empty?
   end
 
+  # todo: error handling
+  def months_ago(i = 0)
+
+     # OpenStruct.new(first: i.month.ago.beginning_of_month, last: i.month.ago.end_of_month)
+    filter[:datetime_range] = {from: i.month.ago.beginning_of_month, to: i.month.ago.end_of_month }
+    filter[:datetime_range]
+  end
+
   # @param [Range] date_range, Range of Date
   def active_range(date_range = nil)
     if date_range
@@ -44,6 +52,11 @@ class Filter
   def signed_up_since(date = nil)
     filter[:signed_up_between] = { from: date.to_date, to: nil } if date
     filter[:signed_up_between]
+  end
+
+  def datetime_range(from: nil, to: nil)
+    filter[:datetime_range] = { from: from, to: to } if from && to
+    filter[:datetime_range]
   end
 
   def signed_up_before(date = nil)

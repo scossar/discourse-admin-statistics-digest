@@ -14,12 +14,15 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   def digest(first_date, last_date)
 
+    # todo: just temporary for now
+    #months_ago = 0
+
     report_date = "#{first_date.to_s(:short)} - #{last_date.to_s(:short)} #{last_date.strftime('%Y')}"
     subject = "Discourse Admin Statistic Report #{report_date}"
     header_metadata = [
       {key: 'admin_statistics_digest.active_users', value: active_users},
       {key: 'admin_statistics_digest.posts_made', value: posts_made},
-      {key: 'admin_statistics_digest.posts_read', value: posts_read}
+      {key: 'admin_statistics_digest.posts_read', value: pages_read(1)}
     ]
 
     health_data = {
@@ -36,7 +39,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       title_key: 'admin_statistics_digest.posts_data_title',
       fields: [
         {key: 'admin_statistics_digest.posts_made', value: posts_made},
-        {key: 'admin_statistics_digest.posts_read', value: posts_read}
+        {key: 'admin_statistics_digest.posts_read', value: pages_read(1)}
       ]
     }
 
@@ -59,7 +62,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       header_metadata: header_metadata,
       active_users: active_users,
       posts_made: posts_made,
-      posts_read: posts_read,
+      posts_read: pages_read(1),
       new_users: new_users,
       repeat_new_users: repeat_new_users,
       dau: daily_active_users,
@@ -158,8 +161,12 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     654
   end
 
-  def posts_read
-    2473
+  def pages_read(i)
+    pages = report.pages_read do |r|
+      r.months_ago(i)
+    end
+
+    pages.count
   end
 
   def new_users
