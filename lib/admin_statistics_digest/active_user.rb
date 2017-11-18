@@ -16,6 +16,7 @@ class AdminStatisticsDigest::ActiveUser < AdminStatisticsDigest::BaseReport
   end
 
   def to_sql
+    # todo: remove this or change the other filter time periods.
     months_ago_filter = if filters.months_ago
                                   <<~SQL
                                   AND (

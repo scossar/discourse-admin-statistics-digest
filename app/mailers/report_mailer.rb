@@ -17,16 +17,20 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     months_ago = 0
 
     # testing active_user query
-    active = active(months_ago)
+    active = daily_active_users(months_ago)
     puts "ACTIVE #{active}"
 
     # todo: just temporary for now
+    dau = daily_active_users(months_ago)
+    mau = monthly_active_users(months_ago)
+    health = (dau * 100 / mau).round(2)
 
 
     report_date = "#{first_date.to_s(:short)} - #{last_date.to_s(:short)} #{last_date.strftime('%Y')}"
     subject = "Discourse Admin Statistic Report #{report_date}"
+    # todo: mau is giving visits, not active users (that will be smaller)
     header_metadata = [
-      {key: 'admin_statistics_digest.active_users', value: active_users},
+      {key: 'admin_statistics_digest.active_users', value: mau},
       {key: 'admin_statistics_digest.posts_made', value: posts_made},
       {key: 'admin_statistics_digest.posts_read', value: posts_read(months_ago)}
     ]
@@ -34,9 +38,9 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     health_data = {
       title_key: 'admin_statistics_digest.community_health_title',
       fields: [
-        {key: 'admin_statistics_digest.daily_active_users', value: daily_active_users},
-        {key: 'admin_statistics_digest.monthly_active_users', value: monthly_active_users},
-        {key: 'admin_statistics_digest.dau_mau', value: health,
+        {key: 'admin_statistics_digest.daily_active_users', value: dau},
+        {key: 'admin_statistics_digest.monthly_active_users', value: mau},
+        {key: 'admin_statistics_digest.dau_mau', value: "#{health}%",
          description: 'admin_statistics_digest.dau_mau_description'}
       ]
     }
@@ -71,8 +75,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       posts_read: posts_read(months_ago),
       new_users: new_users,
       repeat_new_users: repeat_new_users,
-      dau: daily_active_users,
-      mau: monthly_active_users,
+      dau: dau,
+      mau: mau,
       health: health,
       #health_data: health_data,
       data_array: data_array,
@@ -163,6 +167,25 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     2456
   end
 
+  def daily_active_users(months_ago)
+    active_users = report.active_daily_users do |r|
+      r.months_ago months_ago
+    end
+    total_visits = active_users[0]['total_visits']
+    days_in_month = active_users[0]['days_in_month']
+
+    (total_visits / days_in_month).round(1)
+  end
+
+  def monthly_active_users(months_ago)
+    active_users = report.active_daily_users do |r|
+      r.months_ago months_ago
+    end
+    total_visits = active_users[0]['total_visits']
+
+    total_visits
+  end
+
   def posts_made
     654
   end
@@ -184,17 +207,17 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     76
   end
 
-  def daily_active_users
+  def daily_active_users_bak
     273
   end
 
-  def monthly_active_users
+  def monthly_active_users_bak
     769
   end
 
-  def health
-    daily_active_users / monthly_active_users
-  end
+  #def health
+   # daily_active_users(months_ago) / monthly_active_users
+  #end
 
   # end of stubbed methods
 

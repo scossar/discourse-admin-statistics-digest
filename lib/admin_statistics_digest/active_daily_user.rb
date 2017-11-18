@@ -7,10 +7,11 @@ class AdminStatisticsDigest::ActiveDailyUser < AdminStatisticsDigest::BaseReport
   def to_sql
     puts "MONTHS AGO #{filters.months_ago}"
     <<~SQL
-SELECT sum("uv"."posts_read") AS "posts_read"
+SELECT
+count(1) AS "total_visits",
+EXTRACT(DAY FROM DATE '#{filters.months_ago[:period_end]}') AS "days_in_month"
 FROM "user_visits" "uv"
-WHERE "uv"."visited_at" >= '#{filters.months_ago[:period_start]}'
-AND "uv"."visited_at" <= '#{filters.months_ago[:period_end]}'
+WHERE ("uv"."visited_at", "uv"."visited_at") OVERLAPS('#{filters.months_ago[:period_start]}', '#{filters.months_ago[:period_end]}')
     SQL
   end
 
