@@ -22,7 +22,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     header_metadata = [
       {key: 'admin_statistics_digest.active_users', value: active_users},
       {key: 'admin_statistics_digest.posts_made', value: posts_made},
-      {key: 'admin_statistics_digest.posts_read', value: pages_read(1)}
+      {key: 'admin_statistics_digest.posts_read', value: posts_read(1)}
     ]
 
     health_data = {
@@ -161,12 +161,18 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     654
   end
 
-  def pages_read(i)
+  def pages_read(num_months_ago)
     pages = report.pages_read do |r|
-      r.months_ago(i)
+      r.months_ago(num_months_ago)
     end
 
     pages.count
+  end
+
+  def posts_read(months_ago)
+    report.posts_read do |r|
+      r.months_ago months_ago
+    end
   end
 
   def new_users

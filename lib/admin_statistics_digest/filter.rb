@@ -13,11 +13,13 @@ class Filter
     filter.to_h.empty?
   end
 
-  # todo: error handling
-  def months_ago(i = 0)
+  def months_ago(num_months = nil)
+    filter[:datetime_range] = {from: num_months.month.ago.beginning_of_month, to: num_months.month.ago.end_of_month } if num_months
+    filter[:datetime_range]
+  end
 
-     # OpenStruct.new(first: i.month.ago.beginning_of_month, last: i.month.ago.end_of_month)
-    filter[:datetime_range] = {from: i.month.ago.beginning_of_month, to: i.month.ago.end_of_month }
+  def datetime_range(from: nil, to: nil)
+    filter[:datetime_range] = { from: from, to: to } if (from && to)
     filter[:datetime_range]
   end
 
@@ -54,10 +56,7 @@ class Filter
     filter[:signed_up_between]
   end
 
-  def datetime_range(from: nil, to: nil)
-    filter[:datetime_range] = { from: from, to: to } if from && to
-    filter[:datetime_range]
-  end
+
 
   def signed_up_before(date = nil)
     filter[:signed_up_before] = date.to_date if date
