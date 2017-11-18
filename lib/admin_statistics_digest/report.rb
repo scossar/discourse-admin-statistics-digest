@@ -6,6 +6,7 @@ require_relative './popular_post'
 require_relative './popular_topic'
 require_relative './post_read'
 require_relative './active_daily_user'
+require_relative './post_made'
 
 class AdminStatisticsDigest::Report
 
@@ -17,7 +18,8 @@ class AdminStatisticsDigest::Report
     popular_posts: AdminStatisticsDigest::PopularPost,
     popular_topics: AdminStatisticsDigest::PopularTopic,
     posts_read: AdminStatisticsDigest::PostRead,
-    active_daily_users: AdminStatisticsDigest::ActiveDailyUser
+    active_daily_users: AdminStatisticsDigest::ActiveDailyUser,
+    posts_made: AdminStatisticsDigest::PostMade
   }.freeze
 
   def self.generate(&block)

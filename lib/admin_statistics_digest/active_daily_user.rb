@@ -1,4 +1,5 @@
 require_relative '../admin_statistics_digest/base_report'
+# todo: rename - this is used for all tha active user queries.
 
 class AdminStatisticsDigest::ActiveDailyUser < AdminStatisticsDigest::BaseReport
 

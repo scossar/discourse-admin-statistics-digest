@@ -17,8 +17,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     months_ago = 0
 
     # testing active_user query
-    active = daily_active_users(months_ago)
-    puts "ACTIVE #{active}"
 
     # todo: just temporary for now
     dau = daily_active_users(months_ago)
@@ -31,7 +29,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     # todo: mau is giving visits, not active users (that will be smaller)
     header_metadata = [
       {key: 'admin_statistics_digest.active_users', value: mau},
-      {key: 'admin_statistics_digest.posts_made', value: posts_made},
+      {key: 'admin_statistics_digest.posts_made', value: posts_made(months_ago)},
       {key: 'admin_statistics_digest.posts_read', value: posts_read(months_ago)}
     ]
 
@@ -48,7 +46,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     post_data = {
       title_key: 'admin_statistics_digest.posts_data_title',
       fields: [
-        {key: 'admin_statistics_digest.posts_made', value: posts_made},
+        {key: 'admin_statistics_digest.posts_made', value: posts_made(months_ago)},
         {key: 'admin_statistics_digest.posts_read', value: posts_read(months_ago)}
       ]
     }
@@ -71,7 +69,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
       header_metadata: header_metadata,
       active_users: active_users,
-      posts_made: posts_made,
+      posts_made: posts_made(months_ago),
       posts_read: posts_read(months_ago),
       new_users: new_users,
       repeat_new_users: repeat_new_users,
@@ -186,8 +184,12 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     total_visits
   end
 
-  def posts_made
-    654
+  def posts_made(months_ago)
+    posts = report.posts_made do |r|
+      r.months_ago months_ago
+    end
+
+    posts[0]['posts_made']
   end
 
   def posts_read(months_ago)
