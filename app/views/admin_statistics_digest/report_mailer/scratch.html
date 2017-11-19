@@ -371,3 +371,15 @@
 </table><!-- end of outer table -->
 </body>
 </html>
+
+def repeats_filter
+if filters.repeats
+<<~SQL
+JOIN "visit_counts" "vc"
+ON "vc"."user_id" = "u"."id"
+WHERE "vc"."user_visits" >= '#{filters.repeats}'
+SQL
+else
+nil
+end
+end

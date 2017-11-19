@@ -18,6 +18,11 @@ class Filter
     filter[:datetime_range]
   end
 
+  def repeats(repeats = nil)
+    filter[:repeats] = repeats if repeats
+    filter[:repeats]
+  end
+
   def datetime_range(from: nil, to: nil)
     filter[:datetime_range] = { period_start: from, period_end: to } if (from && to)
     filter[:datetime_range]

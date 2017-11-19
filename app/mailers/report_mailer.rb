@@ -43,6 +43,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       ]
     }
 
+    user_data = {
+      title_key: 'admin_statistics_digest.users_section_title',
+      fields: [
+        {key: 'admin_statistics_digest.new_users', value: new_users(months_ago)},
+        {key: 'admin_statistics_digest.repeat_new_users', value: repeat_new_users(months_ago, 2)}
+      ]
+    }
+
     post_data = {
       title_key: 'admin_statistics_digest.posts_data_title',
       fields: [
@@ -53,6 +61,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
     data_array = [
       health_data,
+      user_data,
       post_data
     ]
 
@@ -71,8 +80,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       active_users: active_users,
       posts_made: posts_made(months_ago),
       posts_read: posts_read(months_ago),
-      new_users: new_users,
-      repeat_new_users: repeat_new_users,
+      new_users: new_users(months_ago),
+      repeat_new_users: repeat_new_users(months_ago, 1),
       dau: dau,
       mau: mau,
       health: health,
@@ -201,12 +210,25 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     posts[0]['posts_read']
   end
 
-  def new_users
-    147
+  def new_users(months_ago)
+    new_users = report.new_users do |r|
+      r.months_ago months_ago
+    end
+    puts "NEWUSERS #{new_users}"
+
+    new_users.count
   end
 
-  def repeat_new_users
-    76
+  def repeat_new_users(months_ago, repeats = 2)
+    repeat_new_users = report.new_users do |r|
+      r.months_ago months_ago
+      r.repeats repeats
+
+    end
+
+    puts "REPEATNEW #{repeat_new_users}"
+
+    repeat_new_users.count
   end
 
   def daily_active_users_bak
