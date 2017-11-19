@@ -23,6 +23,11 @@ class Filter
     filter[:repeats]
   end
 
+  def repeat_visits(repeats = nil)
+    filter[:repeat_visits] = repeats if repeats
+    filter[:repeat_visits]
+  end
+
   def datetime_range(from: nil, to: nil)
     filter[:datetime_range] = { period_start: from, period_end: to } if (from && to)
     filter[:datetime_range]

@@ -14,7 +14,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   def digest(first_date, last_date)
 
-    months_ago = 0
+    months_ago = 1
 
     # testing active_user query
 
@@ -47,7 +47,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       title_key: 'admin_statistics_digest.users_section_title',
       fields: [
         {key: 'admin_statistics_digest.new_users', value: new_users(months_ago)},
-        {key: 'admin_statistics_digest.repeat_new_users', value: repeat_new_users(months_ago, 2)}
+        {key: 'admin_statistics_digest.repeat_new_users', value: repeat_new_users(months_ago, 2)},
+        {key: 'admin_statistics_digest.users', value: users(months_ago)}
       ]
     }
 
@@ -75,6 +76,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       most_liked_posts: most_liked_posts(first_date, last_date, limit),
       most_replied_topics: most_replied_topics(first_date, last_date, limit),
       active_responders: active_responders(first_date, last_date, limit),
+
+      users: users(months_ago),
 
       header_metadata: header_metadata,
       active_users: active_users,
@@ -237,6 +240,15 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   def monthly_active_users_bak
     769
+  end
+
+  def users(months_ago)
+    users = report.active_users do |r|
+      r.months_ago months_ago
+    end
+    puts "USERS #{users}"
+
+    users
   end
 
   #def health

@@ -9,6 +9,7 @@ class AdminStatisticsDigest::ActiveUser < AdminStatisticsDigest::BaseReport
   provide_filter :active_range
   provide_filter :limit
   provide_filter :months_ago
+  provide_filter :repeat_visits
 
   def initialize
     super
@@ -85,16 +86,27 @@ SQL
                                 SQL
                               else
                                 nil
-                              end
+                                end
+
+    repeat_visits_filter = if filters.repeat_visits
+                             <<~SQL
+
+                             SQL
+                           else
+                             nil
+                           end
 
     limit_filter = filters.limit ? "LIMIT #{filters.limit}" : nil
 
     sql = <<~SQL
-          SELECT ut.*, count(Reply) as "replies", ut."topics" + count(Reply) AS "total" FROM "#{Post.table_name}" as Reply RIGHT JOIN (
+          SELECT ut.*, count(Reply) as "replies", ut."topics" + count(Reply) AS "total" FROM posts as Reply
+          RIGHT JOIN (
 
-             SELECT u.*, count(t) as "topics" FROM "#{Topic.table_name}" as t RIGHT JOIN (
+             SELECT u.*, count(t) as "topics" FROM topics as t
+             RIGHT JOIN (
 
-                  SELECT "id" "user_id", "username", "name", EXTRACT(EPOCH FROM "created_at") "signed_up_at" from "#{User.table_name}" WHERE "id" > 0
+                  SELECT "id" "user_id", "username", "name", EXTRACT(EPOCH FROM "created_at") "signed_up_at" FROM users
+                  WHERE "id" > 0
                     #{ include_staff_filter }
                     #{ signed_up_before_filter }
                     #{ signed_up_after_filter }
@@ -102,7 +114,8 @@ SQL
                     #{ months_ago_filter }
                     ORDER BY "created_at" DESC
 
-             ) as u ON t."user_id" = u."user_id"
+             ) as u
+               ON t."user_id" = u."user_id"
 
              #{ topic_active_range_filter }
              #{ signed_up_after_filter }
@@ -110,8 +123,11 @@ SQL
              GROUP BY u."user_id", u."username", u."name", u."signed_up_at"
           )
 
-          AS ut ON ut."user_id" = Reply."user_id"  AND (Reply."topic_id" IN (SELECT "id" from "topics" WHERE("topics"."archetype" = 'regular')))
+          AS ut
+          ON ut."user_id" = Reply."user_id"
+          AND (Reply."topic_id" IN (SELECT "id" from "topics" WHERE("topics"."archetype" = 'regular')))
           AND (Reply."deleted_at" IS NULL)
+          AND (Reply."post_number" > 1)
           #{ reply_active_range_filter }
           #{ signed_up_after_filter }
 
@@ -120,6 +136,8 @@ SQL
           ORDER BY ut."topics" + COUNT(Reply) DESC, ut."signed_up_at" ASC
           #{ limit_filter }
     SQL
+
+    puts "USERSSQL #{sql}"
 
     sql
   end
