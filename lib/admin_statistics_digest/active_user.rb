@@ -99,10 +99,10 @@ SQL
     limit_filter = filters.limit ? "LIMIT #{filters.limit}" : nil
 
     sql = <<~SQL
-          SELECT ut.*, count(Reply) as "replies", ut."topics" + count(Reply) AS "total" FROM posts as Reply
+          SELECT ut.*, count(Reply) as "replies", ut."topics" + count(Reply) AS "total", ut."archetype" FROM posts as Reply
           RIGHT JOIN (
 
-             SELECT u.*, count(t) as "topics" FROM topics as t
+             SELECT u.*, count(t) as "topics", t.archetype FROM topics as t
              RIGHT JOIN (
 
                   SELECT "id" "user_id", "username", "name", EXTRACT(EPOCH FROM "created_at") "signed_up_at" FROM users
@@ -117,21 +117,23 @@ SQL
              ) as u
                ON t."user_id" = u."user_id"
 
+
              #{ topic_active_range_filter }
              #{ signed_up_after_filter }
 
-             GROUP BY u."user_id", u."username", u."name", u."signed_up_at"
+             GROUP BY u."user_id", u."username", u."name", u."signed_up_at", t."archetype"
           )
 
           AS ut
           ON ut."user_id" = Reply."user_id"
-          AND (Reply."topic_id" IN (SELECT "id" from "topics" WHERE("topics"."archetype" = 'regular')))
+          --AND (Reply."topic_id" IN (SELECT "id" from "topics" WHERE("topics"."archetype" = 'regular')))
           AND (Reply."deleted_at" IS NULL)
           AND (Reply."post_number" > 1)
+          AND ut."archetype" = 'regular'
           #{ reply_active_range_filter }
           #{ signed_up_after_filter }
 
-          GROUP BY ut."user_id", ut."username", ut."name", ut."signed_up_at", ut."topics"
+          GROUP BY ut."user_id", ut."username", ut."name", ut."signed_up_at", ut."topics", ut."archetype"
           HAVING ut."topics" + count(Reply) > 0
           ORDER BY ut."topics" + COUNT(Reply) DESC, ut."signed_up_at" ASC
           #{ limit_filter }

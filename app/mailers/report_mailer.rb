@@ -14,7 +14,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   def digest(first_date, last_date)
 
-    months_ago = 1
+    months_ago = 0
 
     # testing active_user query
 
