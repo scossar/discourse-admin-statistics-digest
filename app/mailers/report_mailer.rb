@@ -13,59 +13,66 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   default from: SiteSetting.notification_email
 
   def digest(first_date, last_date)
+    months_ago = 0
+    dau = daily_active_users(months_ago)
+    mau = user_visits(months_ago)
+    health = (dau * 100 / mau).round(2)
 
     report_date = "#{first_date.to_s(:short)} - #{last_date.to_s(:short)} #{last_date.strftime('%Y')}"
     subject = "Discourse Admin Statistic Report #{report_date}"
+
     header_metadata = [
       {key: 'admin_statistics_digest.active_users', value: active_users},
-      {key: 'admin_statistics_digest.posts_made', value: posts_made},
-      {key: 'admin_statistics_digest.posts_read', value: posts_read}
+      {key: 'admin_statistics_digest.posts_made', value: posts_made(months_ago)},
+      {key: 'admin_statistics_digest.posts_read', value: posts_read(months_ago)}
     ]
 
     health_data = {
       title_key: 'admin_statistics_digest.community_health_title',
       fields: [
-        {key: 'admin_statistics_digest.daily_active_users', value: daily_active_users},
-        {key: 'admin_statistics_digest.monthly_active_users', value: monthly_active_users},
-        {key: 'admin_statistics_digest.dau_mau', value: health,
+        {key: 'admin_statistics_digest.daily_active_users', value: dau},
+        {key: 'admin_statistics_digest.monthly_active_users', value: mau},
+        {key: 'admin_statistics_digest.dau_mau', value: "#{health}%",
          description: 'admin_statistics_digest.dau_mau_description'}
       ]
     }
 
-    post_data = {
-      title_key: 'admin_statistics_digest.posts_data_title',
+    user_data = {
+      title_key: 'admin_statistics_digest.users_section_title',
       fields: [
-        {key: 'admin_statistics_digest.posts_made', value: posts_made},
-        {key: 'admin_statistics_digest.posts_read', value: posts_read}
+        {key: 'admin_statistics_digest.new_users', value: new_users(months_ago)},
+        {key: 'admin_statistics_digest.repeat_new_users', value: repeat_new_users(months_ago, 2)},
+        {key: 'admin_statistics_digest.user_visits', value: user_visits(months_ago)}
+      ]
+    }
+
+    content_data = {
+      title_key: 'admin_statistics_digest.content_title',
+      fields: [
+        {key: 'admin_statistics_digest.posts_made', value: posts_made(months_ago)},
+        {key: 'admin_statistics_digest.posts_read', value: posts_read(months_ago)}
       ]
     }
 
     data_array = [
       health_data,
-      post_data
+      user_data,
+      content_data
     ]
 
     limit = 5
     @data = {
-      top_new_registered_users: top_new_registered_users(first_date, limit),
-      top_non_staff_users: top_non_staff_users(first_date, limit),
-      demoted_regulars_this_month: demoted_regulars_this_month(first_date, last_date, limit),
-      popular_posts: popular_posts(first_date, last_date, limit),
-      popular_topics: popular_topics(first_date, last_date, limit),
-      most_liked_posts: most_liked_posts(first_date, last_date, limit),
-      most_replied_topics: most_replied_topics(first_date, last_date, limit),
-      active_responders: active_responders(first_date, last_date, limit),
+      users: active_users,
 
       header_metadata: header_metadata,
       active_users: active_users,
-      posts_made: posts_made,
-      posts_read: posts_read,
-      new_users: new_users,
-      repeat_new_users: repeat_new_users,
-      dau: daily_active_users,
-      mau: monthly_active_users,
+      posts_made: posts_made(months_ago),
+      posts_read: posts_read(months_ago),
+      new_users: new_users(months_ago),
+      repeat_new_users: repeat_new_users(months_ago, 1),
+      dau: dau,
+      mau: mau,
       health: health,
-      #health_data: health_data,
       data_array: data_array,
 
       title: subject,
@@ -78,10 +85,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     mail(to: admin_emails, subject: subject)
   end
 
-
   # helper methods
-  # todo: can these be moved to a concern?
-
   def dir_for_locale
     rtl? ? 'rtl' : 'ltr'
   end
@@ -97,7 +101,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     logo_url
   end
 
-  # todo: add '#' to hex value
   def header_color
     "##{ColorScheme.hex_for_name('header_primary')}"
   end
@@ -148,134 +151,78 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   private
 
-  # stubbed methods
-
   def active_users
-    2456
+    active_users = report.active_users do |r|
+    end
+
+    active_users[0]['active_users']
   end
 
-  def posts_made
-    654
+  def monthly_active_users(months_ago)
+    active_users = report.active_daily_users do |r|
+      r.months_ago months_ago
+    end
+
+    active_users[0]['active_users']
   end
 
-  def posts_read
-    2473
+  def user_visits(months_ago)
+    user_visits = report.user_visits do |r|
+      r.months_ago months_ago
+    end
+
+    user_visits[0]['user_visits']
   end
 
-  def new_users
-    147
+  def daily_active_users(months_ago)
+    user_visits = report.user_visits do |r|
+      r.months_ago months_ago
+    end
+
+    total_visits = user_visits[0]['user_visits']
+    days_in_period = user_visits[0]['days_in_period']
+
+    (total_visits / days_in_period).round(2)
   end
 
-  def repeat_new_users
-    76
+  def posts_made(months_ago)
+    posts = report.posts_made do |r|
+      r.months_ago months_ago
+    end
+
+    posts[0]['posts_made']
   end
 
-  def daily_active_users
-    273
+  def posts_read(months_ago)
+    posts = report.posts_read do |r|
+      r.months_ago months_ago
+    end
+
+    posts[0]['posts_read']
   end
 
-  def monthly_active_users
-    769
+  def new_users(months_ago)
+    new_users = report.new_users do |r|
+      r.months_ago months_ago
+    end
+
+    new_users.count
   end
 
-  def health
-    daily_active_users / monthly_active_users
+  def repeat_new_users(months_ago, repeats = 2)
+    repeat_new_users = report.new_users do |r|
+      r.months_ago months_ago
+      r.repeats repeats
+
+    end
+
+    repeat_new_users.count
   end
 
-  # end of stubbed methods
-
-  def top_new_registered_users(signed_up_date, limit)
+  def active(months_ago)
     report.active_users do |r|
-      r.signed_up_since signed_up_date
-      r.include_staff false
-      r.limit limit
+      r.months_ago months_ago
     end
-  end
-
-  def top_non_staff_users(signed_up_date, limit)
-    report.active_users do |r|
-      r.signed_up_before signed_up_date
-      r.limit limit
-      r.include_staff false
-    end
-  end
-
-  def demoted_regulars_this_month(first_date, last_date, limit)
-    last_month_fd = first_date - 1.month
-    last_month_ld = last_date - 1.month
-    two_months_ago_fd = first_date - 2.months
-    two_months_ago_ld = last_date - 2.months
-
-    active_2_months_ago = report.active_users do |r|
-      r.signed_up_before last_month_fd
-      r.active_range two_months_ago_fd..two_months_ago_ld
-      r.include_staff false
-      r.limit limit
-    end
-
-    active_1_months_ago = report.active_users do |r|
-      r.signed_up_before last_month_fd
-      r.active_range two_months_ago_ld..last_month_fd
-      r.include_staff false
-      r.limit limit
-    end
-
-    this_month = report.active_users do |r|
-      r.signed_up_between from: last_month_fd, to: last_month_ld
-      r.active_range last_month_fd..last_month_ld
-      r.include_staff false
-      r.limit limit
-    end
-
-    [
-      active_2_months_ago.map {|s| {user_id: s['user_id'], username: s['username'], name: s['name']}.with_indifferent_access},
-      active_1_months_ago.map {|s| {user_id: s['user_id'], username: s['username'], name: s['name']}.with_indifferent_access}
-    ].flatten.uniq - this_month.map {|s| {user_id: s['user_id'], username: s['username'], name: s['name']}.with_indifferent_access}
-  end
-
-  def popular_posts(first_date, last_date, limit)
-    report.popular_posts do |r|
-      r.limit limit
-      r.popular_by_date first_date, last_date
-    end
-  end
-
-  def popular_topics(first_date, last_date, limit)
-    report.popular_topics do |r|
-      r.limit limit
-      r.popular_by_date first_date, last_date
-    end
-  end
-
-  def most_liked_posts(first_date, last_date, limit)
-    report.most_liked_posts do |r|
-      r.limit limit
-      r.active_range first_date..last_date
-    end
-  end
-
-  def most_replied_topics(first_date, last_date, limit)
-    report.most_replied_topics do |r|
-      r.limit limit
-      r.most_replied_by_date first_date, last_date
-    end
-  end
-
-  def active_responders(first_date, last_date, limit)
-    result = []
-    AdminStatisticsDigest::ActiveResponder.monitored_topic_categories.each do |category_id|
-      responders = report.active_responders do |r|
-        r.limit limit
-        r.topic_category_id category_id
-        r.active_range first_date..last_date
-      end
-
-      result.push({
-                    category_name: Category.find(category_id).name,
-                    responders: responders
-                  }.with_indifferent_access)
-    end
-    result
   end
 
   def report

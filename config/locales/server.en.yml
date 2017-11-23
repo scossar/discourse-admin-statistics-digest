@@ -13,4 +13,9 @@ en:
     dau_mau: "DAU/MAU"
     dau_mau_description: "Daily active users over monthly active users is a measure of how sticky your community is. Aim for 30% or above."
     posts_data_title: "Posts"
+    users_section_title: "Users"
+    content_title: "Content created"
+    user_visits: "User visits"
+    popular_posts_title: "Popular posts"
+    popular_topics_title: "Popular topics"
 
