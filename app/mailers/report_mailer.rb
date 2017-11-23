@@ -49,6 +49,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     content_data = {
       title_key: 'admin_statistics_digest.content_title',
       fields: [
+        {key: 'admin_statistics_digest.topics_made', value: topics_made(months_ago)},
         {key: 'admin_statistics_digest.posts_made', value: posts_made(months_ago)},
         {key: 'admin_statistics_digest.posts_read', value: posts_read(months_ago)}
       ]
@@ -199,6 +200,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
 
     posts[0]['posts_read']
+  end
+
+  def topics_made(months_ago)
+    topics = report.topics_made do |r|
+      r.months_ago months_ago
+    end
+
+    topics[0]['topics_made']
   end
 
   def new_users(months_ago)

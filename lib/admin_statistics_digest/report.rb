@@ -2,6 +2,7 @@ require_relative './active_user'
 require_relative './post_read'
 require_relative './active_daily_user'
 require_relative './post_made'
+require_relative './topic_made'
 require_relative './new_user'
 require_relative './user_visit'
 
@@ -14,6 +15,7 @@ class AdminStatisticsDigest::Report
     posts_made: AdminStatisticsDigest::PostMade,
     new_users: AdminStatisticsDigest::NewUser,
     user_visits: AdminStatisticsDigest::UserVisit,
+    topics_made: AdminStatisticsDigest::TopicMade
   }.freeze
 
   def self.generate(&block)
