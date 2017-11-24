@@ -22,36 +22,36 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     subject = "Discourse Admin Statistic Report #{report_date}"
 
     header_metadata = [
-      {key: 'admin_statistics_digest.active_users', value: active_users},
-      {key: 'admin_statistics_digest.posts_made', value: posts_made(months_ago)},
-      {key: 'admin_statistics_digest.posts_read', value: posts_read(months_ago)}
+      {key: 'statistics_digest.active_users', value: active_users},
+      {key: 'statistics_digest.posts_made', value: posts_made(months_ago)},
+      {key: 'statistics_digest.posts_read', value: posts_read(months_ago)}
     ]
 
     health_data = {
-      title_key: 'admin_statistics_digest.community_health_title',
+      title_key: 'statistics_digest.community_health_title',
       fields: [
-        {key: 'admin_statistics_digest.daily_active_users', value: dau},
-        {key: 'admin_statistics_digest.monthly_active_users', value: mau},
-        {key: 'admin_statistics_digest.dau_mau', value: "#{health}%",
-         description: 'admin_statistics_digest.dau_mau_description'}
+        {key: 'statistics_digest.daily_active_users', value: dau},
+        {key: 'statistics_digest.monthly_active_users', value: mau},
+        {key: 'statistics_digest.dau_mau', value: "#{health}%",
+         description: 'statistics_digest.dau_mau_description'}
       ]
     }
 
     user_data = {
-      title_key: 'admin_statistics_digest.users_section_title',
+      title_key: 'statistics_digest.users_section_title',
       fields: [
-        {key: 'admin_statistics_digest.new_users', value: new_users(months_ago)},
-        {key: 'admin_statistics_digest.repeat_new_users', value: repeat_new_users(months_ago, 2)},
-        {key: 'admin_statistics_digest.user_visits', value: user_visits(months_ago)}
+        {key: 'statistics_digest.new_users', value: new_users(months_ago)},
+        {key: 'statistics_digest.repeat_new_users', value: repeat_new_users(months_ago, 2)},
+        {key: 'statistics_digest.user_visits', value: user_visits(months_ago)}
       ]
     }
 
     content_data = {
-      title_key: 'admin_statistics_digest.content_title',
+      title_key: 'statistics_digest.content_title',
       fields: [
-        {key: 'admin_statistics_digest.topics_made', value: topics_made(months_ago)},
-        {key: 'admin_statistics_digest.posts_made', value: posts_made(months_ago)},
-        {key: 'admin_statistics_digest.posts_read', value: posts_read(months_ago)}
+        {key: 'statistics_digest.topics_made', value: topics_made(months_ago)},
+        {key: 'statistics_digest.posts_made', value: posts_made(months_ago)},
+        {key: 'statistics_digest.posts_read', value: posts_read(months_ago)}
       ]
     }
 
@@ -76,8 +76,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       health: health,
       data_array: data_array,
 
-      title: subject,
-      subject: subject,
+      title: digest_title,
+      subject: digest_title,
       report_date: report_date
     }
 
@@ -143,7 +143,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   end
 
   def digest_title
-    "#{I18n.t('admin_statistics_digest.title')} #{report_date}"
+    "#{I18n.t('statistics_digest.title')} #{report_date}"
   end
 
   def spacer_color(outer_count, inner_count = 0)
