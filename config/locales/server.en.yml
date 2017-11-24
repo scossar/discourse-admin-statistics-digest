@@ -1,7 +1,7 @@
 en:
   site_settings:
-    admin_statistics_digest: "Send Site Statistics for each month"
-  admin_statistics_digest:
+    admin_statistics_digest_enabled: "Enable the Admin Statistics Digest"
+  statistics_digest:
     title: "Key statistics for"
     active_users: "active users"
     posts_made: "posts made"

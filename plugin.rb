@@ -5,7 +5,7 @@
 # url: https://github.com/discourse/discourse-admin-statistics-digest
 
 
-enabled_site_setting :admin_statistics_digest
+enabled_site_setting :admin_statistics_digest_enabled
 
 gem 'rufus-scheduler', '3.1.8'
 gem 'sidekiq-scheduler', '2.0.9'
