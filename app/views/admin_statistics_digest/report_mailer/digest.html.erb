@@ -97,7 +97,7 @@
                                     <td class="highlight-side-spacer" width="5%" style="background-color:<%= spacer_color outer_count -%>;">
                                         &nbsp;
                                     </td>
-                                    <td style="padding: 24px 0 6px 0; background-color:<%= body_bgcolor -%>; color:<%= body_color -%>;font-size:22px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;text-align: center">
+                                    <td style="padding: 20px 0 5px 0; background-color:<%= body_bgcolor -%>; color:<%= body_color -%>;font-size:22px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;text-align: center">
                                         <strong><%= t obj[:title_key] -%></strong>
                                     </td>
                                     <td class="highlight-side-spacer" width="5%" style="background-color:<%= spacer_color outer_count -%>;">
@@ -112,17 +112,17 @@
                     <% obj[:fields].each_with_index do |field, inner_count| %>
                         <!-- content data rows -->
                         <tr>
-                            <td style="background-color: #ffffff; color: #222222;font-size:18px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;">
+                            <td style="background-color:<%= body_bgcolor -%>; color:<%= body_color -%>;font-size:18px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;">
                                 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
                                     <tr>
                                         <td class="highlight-side-spacer" width="5%" style="background-color:<%= spacer_color(outer_count, inner_count) -%>;">&nbsp;</td>
                                         <td>
                                             <table border="0" cellpadding="0" cellspacing="0" width="66%" align="center" style="border-collapse:collapse;">
                                                 <tr>
-                                                    <td style="padding: 15px 0 15px 0;background-color: #ffffff; color: #222222;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif;<%= table_border_style obj[:fields].count, inner_count -%>" width="66%">
+                                                    <td style="padding: 15px 0 15px 0;background-color:<%= body_bgcolor -%>; color:<%= body_color -%>;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;<%= table_border_style obj[:fields].count, inner_count -%>" width="66%">
                                                         <%= t field[:key] -%>
                                                     </td>
-                                                    <td style="padding: 15px 0 15px 0;background-color: #ffffff; color: #222222;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif;<%= table_border_style obj[:fields].count, inner_count -%>" width="20%">
+                                                    <td style="padding: 15px 0 15px 0;background-color:<%= body_bgcolor -%>; color:<%= body_color -%>;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;<%= table_border_style obj[:fields].count, inner_count -%>" width="20%">
                                                         <%= field[:value] -%>
                                                     </td>
                                                 </tr>
@@ -138,12 +138,12 @@
 
                     <!-- content data bottom padding row -->
                     <tr>
-                        <td style="background-color: #ffffff; color: #222222;font-size:15px;line-height:15px;">
+                        <td style="background-color:<%= body_bgcolor -%>;font-size:15px;line-height:15px;">
                             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
                                 <tr>
-                                    <td class="highlight-side-spacer" width="5%" style="background-color: #eeeeee;font-size:15px;line-height:15px;">&nbsp;</td>
-                                    <td style="background-color: #ffffff; color: #222222;font-size:15px;line-height:15px;" width="90%">&nbsp;</td>
-                                    <td class="highlight-side-spacer" width="5%" style="background-color: #eeeeee;font-size:15px;line-height:15px;">&nbsp;</td>
+                                    <td class="highlight-side-spacer" width="5%" style="background-color:<%= bg_color -%>;font-size:15px;line-height:15px;">&nbsp;</td>
+                                    <td style="background-color:<%= body_bgcolor -%>;font-size:15px;line-height:15px;" width="90%">&nbsp;</td>
+                                    <td class="highlight-side-spacer" width="5%" style="background-color:<%= bg_color -%>;font-size:15px;line-height:15px;">&nbsp;</td>
                                 </tr>
                             </table>
                         </td>
