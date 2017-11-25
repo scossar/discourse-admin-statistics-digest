@@ -7,7 +7,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   helper_method :dir_for_locale, :logo_url, :header_color, :header_bgcolor, :anchor_color,
                 :bg_color, :text_color, :highlight_bgcolor, :highlight_color, :body_bgcolor,
-                :body_color, :report_date, :digest_title, :spacer_color
+                :body_color, :report_date, :digest_title, :spacer_color, :table_border_style
 
   append_view_path Rails.root.join('plugins', 'discourse-admin-statistics-digest', 'app', 'views')
   default from: SiteSetting.notification_email
@@ -148,6 +148,12 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   def spacer_color(outer_count, inner_count = 0)
     outer_count == 0 && inner_count == 0 ? highlight_bgcolor : bg_color
+  end
+
+  def table_border_style(total_rows, current_row)
+    unless total_rows - 1 == current_row
+      "border-bottom:1px solid #dddddd;"
+    end
   end
 
   private
