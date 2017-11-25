@@ -34,14 +34,12 @@ after_initialize do
   load File.expand_path('../../discourse-admin-statistics-digest/lib/admin_statistics_digest/report.rb', __FILE__)
 
   # models
-  # load File.expand_path('../../discourse-admin-statistics-digest/app/models/active_responder_category.rb', __FILE__)
   load File.expand_path('../../discourse-admin-statistics-digest/app/models/email_timeout.rb', __FILE__)
 
   # mailers
   load File.expand_path('../../discourse-admin-statistics-digest/app/mailers/report_mailer.rb', __FILE__)
 
   # controllers
-  # load File.expand_path('../../discourse-admin-statistics-digest/app/controllers/categories_controller.rb', __FILE__)
   load File.expand_path('../../discourse-admin-statistics-digest/app/controllers/report_scheduler_controller.rb', __FILE__)
 
   # jobs
@@ -66,8 +64,6 @@ after_initialize do
 
   AdminStatisticsDigest::Engine.routes.draw do
     root to: 'admin_statistics_digest#index'
-    # get 'categories', to: 'categories#index'
-    # put 'categories/update', to: 'categories#update'
     get 'report-scheduler/preview', to: 'report_scheduler#preview'
     get 'report-scheduler/timeout', to: 'report_scheduler#get_timeout'
     put 'report-scheduler/timeout', to: 'report_scheduler#set_timeout'

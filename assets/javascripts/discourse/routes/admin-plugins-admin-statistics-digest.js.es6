@@ -7,7 +7,6 @@ export default Discourse.Route.extend(Config, Helper, {
 
   model() {
     return Ember.RSVP.hash({
-      // categories: ajax(`${this.baseUrl}/categories.json`).then(model => model),
       emailSetting: ajax(`${this.baseUrl}/report-scheduler/timeout.json`).then(model => model)
     });
   },
