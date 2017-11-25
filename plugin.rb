@@ -26,19 +26,12 @@ after_initialize do
   # libs
   load File.expand_path('../../discourse-admin-statistics-digest/lib/admin_statistics_digest/report.rb', __FILE__)
 
-  # models
-  # load File.expand_path('../../discourse-admin-statistics-digest/app/models/email_timeout.rb', __FILE__)
-
-  # mailers
+   # mailers
   load File.expand_path('../../discourse-admin-statistics-digest/app/mailers/report_mailer.rb', __FILE__)
 
-  # controllers
-  load File.expand_path('../../discourse-admin-statistics-digest/app/controllers/report_scheduler_controller.rb', __FILE__)
-
-  # jobs
+   # jobs
   if Rails.env.development? || (defined?(Rails::Server) || defined?(Unicorn) || defined?(Puma))
     require 'sidekiq/scheduler'
-
 
     load File.expand_path('../../discourse-admin-statistics-digest/app/jobs/admin_statistics_digest.rb', __FILE__)
 
@@ -60,7 +53,6 @@ after_initialize do
     end
 
     def preview
-      puts "IN THE PREVIEW METHOD"
       AdminStatisticsDigest::ReportMailer.digest(30.days.ago.to_date, Date.today).deliver_now
       render json: { success: true }
     end
