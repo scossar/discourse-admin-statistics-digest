@@ -108,6 +108,7 @@
                         </td>
                     </tr><!-- end of title section -->
 
+
                     <% obj[:fields].each_with_index do |field, inner_count| %>
                         <!-- content data row (blue spacer) -->
                         <tr>
@@ -118,21 +119,20 @@
                                             &nbsp;
                                         </td>
                                         <td>
-                                            <!-- inner content table -->
-                                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="66%" style="border-collapse:collapse;margin:0 auto;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
                                                 <tr>
-                                                    <td style="padding: 0 0 12px 0;background-color:<%= body_bgcolor -%>; color:<%= text_color -%>;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif; !important;">
-                                                        <%= field[:value] -%> <%= t field[:key] -%>
+                                                    <td class="highlight-side-spacer" width="5%" style="background-color:palegoldenrod;">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td style="padding: 0 0 12px 0;background-color: palegoldenrod; color: #222222;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif;" width="25%%">
+                                                        <%= t field[:key] -%>
+                                                    </td>
+                                                    <td style="padding: 0 0 12px 0;background-color: paleturquoise; color: #222222;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif;vertical-align:top;" width="25%">
+                                                        <%= field[:value] -%>
                                                     </td>
                                                 </tr>
-                                                <% if field[:description].present? -%>
-                                                    <tr>
-                                                        <td style="padding: 0 0 12px 0;background-color:<%= body_bgcolor -%>; color:<%= text_color -%>;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif; !important;">
-                                                            <em><%= t field[:description] -%></em>
-                                                        </td>
-                                                    </tr>
-                                                <% end %>
-                                            </table><!-- end of inner content table -->
+                                            </table>
+
                                         </td>
                                         <td class="highlight-side-spacer" width="5%" style="background-color:<%= spacer_color(outer_count, inner_count) -%>;">&nbsp;</td>
                                     </tr>
