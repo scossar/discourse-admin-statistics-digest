@@ -8,6 +8,7 @@ class AdminStatisticsDigest::CategoriesController < ApplicationController
     render json: AdminStatisticsDigest::ActiveResponderCategory.all.to_json
   end
 
+=begin
   def update
     if AdminStatisticsDigest::ActiveResponderCategory.update_categories(params.require(:categories))
       render json: AdminStatisticsDigest::ActiveResponderCategory.all.to_json
@@ -19,4 +20,5 @@ class AdminStatisticsDigest::CategoriesController < ApplicationController
   def root
     render json: {}
   end
+=end
 end

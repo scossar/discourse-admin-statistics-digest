@@ -23,6 +23,13 @@ after_initialize do
     end
   end
 
+  require_dependency 'application_controller'
+  class AdminStatisticsDigest::AdminStatisticsDigestController < ::ApplicationController
+    def index
+    end
+
+  end
+
   # libs
   load File.expand_path('../../discourse-admin-statistics-digest/lib/admin_statistics_digest/report.rb', __FILE__)
 
@@ -58,7 +65,7 @@ after_initialize do
 
 
   AdminStatisticsDigest::Engine.routes.draw do
-    root to: 'categories#root'
+    root to: 'admin_statistics_digest#root'
     get 'categories', to: 'categories#index'
     put 'categories/update', to: 'categories#update'
     get 'report-scheduler/preview', to: 'report_scheduler#preview'
