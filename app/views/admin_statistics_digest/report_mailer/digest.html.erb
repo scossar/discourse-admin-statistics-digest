@@ -119,23 +119,13 @@
                                         <td>
                                             <table border="0" cellpadding="0" cellspacing="0" width="66%" align="center" style="border-collapse:collapse;">
                                                 <tr>
-                                                    <td style="padding: 18px 0 0 0;background-color: #ffffff; color: #222222;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif;" width="66%">
+                                                    <td style="padding: 15px 0 15px 0;background-color: #ffffff; color: #222222;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif;<%= table_border_style obj[:fields].count, inner_count -%>" width="66%">
                                                         <%= t field[:key] -%>
                                                     </td>
-                                                    <td style="padding: 18px 0 0 0;background-color: #ffffff; color: #222222;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif;" width="33%">
+                                                    <td style="padding: 15px 0 15px 0;background-color: #ffffff; color: #222222;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif;<%= table_border_style obj[:fields].count, inner_count -%>" width="20%">
                                                         <%= field[:value] -%>
                                                     </td>
                                                 </tr>
-                                                <% unless inner_count == (obj[:fields].count - 1) -%>
-                                                <tr>
-                                                    <td style="padding: 18px 0 0 0;background-color: #ffffff; color: #eeeeee;border-bottom:1px solid red;" width="66%">
-                                                        &nbsp;
-                                                    </td>
-                                                    <td style="padding: 18px 0 0 0;background-color: #ffffff; color: #eeeeee;border-bottom:1px solid red;" width="33%">
-                                                        &nbsp;
-                                                    </td>
-                                                </tr>
-                                                <% end -%>
                                             </table>
 
                                         </td>
@@ -148,12 +138,12 @@
 
                     <!-- content data bottom padding row -->
                     <tr>
-                        <td style="background-color: #ffffff; color: #222222;font-size:24px;line-height:24px;">
+                        <td style="background-color: #ffffff; color: #222222;font-size:15px;line-height:15px;">
                             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
                                 <tr>
-                                    <td class="highlight-side-spacer" width="5%" style="background-color: #eeeeee;font-size:24px;line-height:24px;">&nbsp;</td>
-                                    <td style="background-color: #ffffff; color: #222222;font-size:24px;line-height:24px;" width="90%">&nbsp;</td>
-                                    <td class="highlight-side-spacer" width="5%" style="background-color: #eeeeee;font-size:24px;line-height:24px;">&nbsp;</td>
+                                    <td class="highlight-side-spacer" width="5%" style="background-color: #eeeeee;font-size:15px;line-height:15px;">&nbsp;</td>
+                                    <td style="background-color: #ffffff; color: #222222;font-size:15px;line-height:15px;" width="90%">&nbsp;</td>
+                                    <td class="highlight-side-spacer" width="5%" style="background-color: #eeeeee;font-size:15px;line-height:15px;">&nbsp;</td>
                                 </tr>
                             </table>
                         </td>
@@ -161,7 +151,7 @@
 
                     <!-- horizontal spacer row (gray) -->
                     <tr>
-                        <td style="background-color:<%= bg_color -%>;font-size:24px;line-height:24px;" width="100%">
+                        <td style="background-color:<%= bg_color -%>;font-size:30px;line-height:30px;" width="100%">
                             &nbsp;
                         </td>
                     </tr><!-- end of horizontal spacer row -->
