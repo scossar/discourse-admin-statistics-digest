@@ -117,7 +117,7 @@
                                     <tr>
                                         <td class="highlight-side-spacer" width="5%" style="background-color:<%= spacer_color(outer_count, inner_count) -%>;">&nbsp;</td>
                                         <td>
-                                            <table border="0" cellpadding="0" cellspacing="0" width="50%" align="center" style="border-collapse:collapse;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="66%" align="center" style="border-collapse:collapse;">
                                                 <tr>
                                                     <td style="padding: 18px 0 0 0;background-color: #ffffff; color: #222222;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif;" width="66%">
                                                         <%= t field[:key] -%>
@@ -126,6 +126,16 @@
                                                         <%= field[:value] -%>
                                                     </td>
                                                 </tr>
+                                                <% unless inner_count == (obj[:fields].count - 1) -%>
+                                                <tr>
+                                                    <td style="padding: 18px 0 0 0;background-color: #ffffff; color: #eeeeee;border-bottom:1px solid red;" width="66%">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td style="padding: 18px 0 0 0;background-color: #ffffff; color: #eeeeee;border-bottom:1px solid red;" width="33%">
+                                                        &nbsp;
+                                                    </td>
+                                                </tr>
+                                                <% end -%>
                                             </table>
 
                                         </td>
