@@ -5,12 +5,6 @@ import Helper from 'discourse/plugins/discourse-admin-statistics-digest/discours
 export default Discourse.Route.extend(Config, Helper, {
   controllerName: 'adminStatisticsDigestSetting',
 
-  model() {
-    return Ember.RSVP.hash({
-      emailSetting: ajax(`${this.baseUrl}/report-scheduler/timeout.json`).then(model => model)
-    });
-  },
-
   renderTemplate: function() {
     this.render('adminStatisticsDigestSetting');
   },

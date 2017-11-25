@@ -23,18 +23,11 @@ after_initialize do
     end
   end
 
-  require_dependency 'application_controller'
-  class AdminStatisticsDigest::AdminStatisticsDigestController < ::ApplicationController
-    def index
-    end
-
-  end
-
   # libs
   load File.expand_path('../../discourse-admin-statistics-digest/lib/admin_statistics_digest/report.rb', __FILE__)
 
   # models
-  load File.expand_path('../../discourse-admin-statistics-digest/app/models/email_timeout.rb', __FILE__)
+  # load File.expand_path('../../discourse-admin-statistics-digest/app/models/email_timeout.rb', __FILE__)
 
   # mailers
   load File.expand_path('../../discourse-admin-statistics-digest/app/mailers/report_mailer.rb', __FILE__)
@@ -61,12 +54,21 @@ after_initialize do
     end
   end
 
+  require_dependency 'application_controller'
+  class AdminStatisticsDigest::AdminStatisticsDigestController < ::ApplicationController
+    def index
+    end
+
+    def preview
+      puts "IN THE PREVIEW METHOD"
+      AdminStatisticsDigest::ReportMailer.digest(30.days.ago.to_date, Date.today).deliver_now
+      render json: { success: true }
+    end
+  end
 
   AdminStatisticsDigest::Engine.routes.draw do
     root to: 'admin_statistics_digest#index'
-    get 'report-scheduler/preview', to: 'report_scheduler#preview'
-    get 'report-scheduler/timeout', to: 'report_scheduler#get_timeout'
-    put 'report-scheduler/timeout', to: 'report_scheduler#set_timeout'
+    get 'preview', to: 'admin_statistics_digest#preview'
   end
 
   Discourse::Application.routes.append do
