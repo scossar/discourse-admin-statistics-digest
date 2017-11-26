@@ -26,6 +26,7 @@ SELECT
 count("uv"."user_id") AS "user_visits",
 "uv"."user_id"
 FROM "user_visits" "uv"
+WHERE ("uv"."visited_at", "uv"."visited_at") OVERLAPS('#{filters.months_ago[:period_start]}', '#{filters.months_ago[:period_end]}')
 GROUP BY "uv"."user_id"
 )
 
