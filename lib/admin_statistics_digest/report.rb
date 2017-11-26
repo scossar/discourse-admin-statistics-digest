@@ -1,7 +1,7 @@
 require_relative './active_user'
 require_relative './post_read'
 require_relative './active_daily_user'
-require_relative './post_made'
+require_relative './post_created'
 require_relative './topic_made'
 require_relative './new_user'
 require_relative './user_visit'
@@ -12,7 +12,7 @@ class AdminStatisticsDigest::Report
     active_users: AdminStatisticsDigest::ActiveUser,
     posts_read: AdminStatisticsDigest::PostRead,
     active_daily_users: AdminStatisticsDigest::ActiveDailyUser,
-    posts_made: AdminStatisticsDigest::PostMade,
+    posts_created: AdminStatisticsDigest::PostCreated,
     new_users: AdminStatisticsDigest::NewUser,
     user_visits: AdminStatisticsDigest::UserVisit,
     topics_made: AdminStatisticsDigest::TopicMade

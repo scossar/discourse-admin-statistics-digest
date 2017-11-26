@@ -16,6 +16,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   def digest(first_date, last_date)
     months_ago = 0
     active_users = active_users(months_ago)
+    posts_created = posts_created(months_ago)
     dau = daily_active_users(months_ago)
     mau = user_visits(months_ago)
     health = (dau * 100 / mau).round(2)
@@ -23,7 +24,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
     header_metadata = [
       {key: 'statistics_digest.active_users', value: active_users},
-      {key: 'statistics_digest.posts_made', value: posts_made(months_ago)},
+      {key: 'statistics_digest.posts_created', value: posts_created},
       {key: 'statistics_digest.posts_read', value: posts_read(months_ago)}
     ]
 
@@ -53,7 +54,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       title_key: 'statistics_digest.content_title',
       fields: [
         {key: 'statistics_digest.topics_made', value: topics_made(months_ago)},
-        {key: 'statistics_digest.posts_made', value: posts_made(months_ago)},
+        {key: 'statistics_digest.posts_made', value: posts_created(months_ago)},
         {key: 'statistics_digest.posts_read', value: posts_read(months_ago)}
       ]
     }
@@ -66,7 +67,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
     @data = {
       active_users: active_users,
-      posts_made: posts_made(months_ago),
+      posts_created: posts_created,
       posts_read: posts_read(months_ago),
       header_metadata: header_metadata,
       data_array: data_array,
@@ -199,12 +200,12 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     (total_visits / days_in_period).round(2)
   end
 
-  def posts_made(months_ago)
-    posts = report.posts_made do |r|
+  def posts_created(months_ago)
+    posts = report.posts_created do |r|
       r.months_ago months_ago
     end
 
-    posts[0]['posts_made']
+    posts[0]['posts_created']
   end
 
   def posts_read(months_ago)
