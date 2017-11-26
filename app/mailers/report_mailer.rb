@@ -16,6 +16,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   def digest(first_date, last_date)
     months_ago = 0
     active_users = active_users(months_ago)
+    inactive_users = all_users - active_users
     posts_created = posts_created(months_ago, 'regular', false)
     dau = daily_active_users(months_ago)
     mau = active_users
@@ -46,7 +47,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       fields: [
         {key: 'statistics_digest.new_users', value: new_users(months_ago)},
         {key: 'statistics_digest.repeat_new_users', value: repeat_new_users(months_ago, 2)},
-        {key: 'statistics_digest.user_visits', value: user_visits(months_ago)}
+        {key: 'statistics_digest.user_visits', value: user_visits(months_ago)},
+        {key: 'statistics_digest.inactive_users', value: inactive_users}
       ]
     }
 
@@ -182,6 +184,10 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
 
     active_users[0]['active_users']
+  end
+
+  def all_users
+    User.where('id > 0').count
   end
 
   def monthly_active_users(months_ago)

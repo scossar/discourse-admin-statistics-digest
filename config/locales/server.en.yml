@@ -7,6 +7,7 @@ en:
     visit_link: "Visit this link"
     title: "Key statistics for"
     active_users: "Active Users"
+    inactive_users: "Inactive Users"
     posts_created: "Posts"
     topic_replies_created: "Responses"
     topics_created: "Topics"
