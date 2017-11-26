@@ -18,8 +18,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     active_users = active_users(months_ago)
     posts_created = posts_created(months_ago)
     dau = daily_active_users(months_ago)
-    mau = user_visits(months_ago)
-    health = (dau * 100 / mau).round(2)
+    mau = active_users
+    health = health(dau, mau)
     subject = digest_title(months_ago)
 
     header_metadata = [
@@ -194,7 +194,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.months_ago months_ago
     end
 
-    daily_active_users[0]['dau']
+    daily_active_users[0]['dau'].present? ? daily_active_users[0]['dau'].round(2) : nil
   end
 
   def posts_created(months_ago)
@@ -237,6 +237,10 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
 
     repeat_new_users.count
+  end
+
+  def health( dau, mau)
+    (dau * 100 / mau).round(2)
   end
 
   def active(months_ago)
