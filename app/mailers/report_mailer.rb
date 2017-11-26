@@ -55,7 +55,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       fields: [
         {key: 'statistics_digest.posts_read', value: posts_read(months_ago)},
         {key: 'statistics_digest.posts_liked', value: posts_liked(months_ago)},
-        {key: 'statistics_digest.topics_solved', value: topics_solved(months_ago)}
+        {key: 'statistics_digest.topics_solved', value: topics_solved(months_ago)},
+        {key: 'statistics_digest.flagged_posts', value: flagged_posts(months_ago)}
       ]
     }
 
@@ -268,6 +269,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
 
     topics_solved[0]['user_action'].present? ? topics_solved[0]['user_action'] : nil
+  end
+
+  def flagged_posts(months_ago)
+    flagged_posts = report.flagged_posts do |r|
+      r.months_ago months_ago
+    end
+
+    flagged_posts[0]['flagged_posts'].present? ? flagged_posts[0]['flagged_posts'] : nil
   end
 
   def health( dau, mau)

@@ -7,6 +7,7 @@ require_relative './new_user'
 require_relative './user_visit'
 require_relative './daily_active_user'
 require_relative './user_action'
+require_relative './flagged_post'
 
 class AdminStatisticsDigest::Report
 
@@ -19,7 +20,8 @@ class AdminStatisticsDigest::Report
     user_visits: AdminStatisticsDigest::UserVisit,
     topics_created: AdminStatisticsDigest::TopicCreated,
     daily_active_users: AdminStatisticsDigest::DailyActiveUser,
-    user_actions: AdminStatisticsDigest::UserAction
+    user_actions: AdminStatisticsDigest::UserAction,
+    flagged_posts: AdminStatisticsDigest::FlaggedPost
   }.freeze
 
   def self.generate(&block)
