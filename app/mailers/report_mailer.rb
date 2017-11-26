@@ -35,7 +35,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
          description_index: 0}
       ],
       descriptions: [
-        'statistics_digest.dau_mau_description'
+        {key: 'statistics_digest.dau_mau_description'}
       ]
     }
 
