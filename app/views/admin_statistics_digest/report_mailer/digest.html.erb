@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title><%= digest_title %></title>
+    <title><%= @data[:title] %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     <style type="text/css">
@@ -47,7 +47,7 @@
                 <!-- header title row -->
                 <tr>
                     <td style="padding:24px 0 12px 0;background-color:<%= highlight_bgcolor -%>;color:<%= highlight_color -%>;font-size:22px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;text-align: center">
-                        <strong><%= digest_title -%></strong>
+                        <strong><%= @data[:title] -%></strong>
                     </td>
                 </tr><!-- end of header title row -->
 
