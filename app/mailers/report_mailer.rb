@@ -190,14 +190,11 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   end
 
   def daily_active_users(months_ago)
-    user_visits = report.user_visits do |r|
+    daily_active_users = report.daily_active_users do |r|
       r.months_ago months_ago
     end
 
-    total_visits = user_visits[0]['user_visits']
-    days_in_period = user_visits[0]['days_in_period']
-
-    (total_visits / days_in_period).round(2)
+    daily_active_users[0]['dau']
   end
 
   def posts_created(months_ago)
