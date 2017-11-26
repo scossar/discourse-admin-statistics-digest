@@ -15,6 +15,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   def digest(first_date, last_date)
     months_ago = 0
+    active_users = active_users(months_ago)
     dau = daily_active_users(months_ago)
     mau = user_visits(months_ago)
     health = (dau * 100 / mau).round(2)
@@ -163,8 +164,9 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   private
 
-  def active_users
+  def active_users(months_ago = nil)
     active_users = report.active_users do |r|
+      r.months_ago months_ago if months_ago
     end
 
     active_users[0]['active_users']
