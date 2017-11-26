@@ -38,6 +38,11 @@ class Filter
     filter[:exclude_topic]
   end
 
+  def action_type(action_type = nil)
+    filter[:action_type] = action_type if action_type
+    filter[:action_type]
+  end
+
   def method_missing(method_sym, *arguments, &block)
     if filter.respond_to?(method_sym)
       begin

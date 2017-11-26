@@ -53,7 +53,9 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     user_action_data = {
       title_key: 'statistics_digest.user_actions_title',
       fields: [
-        {key: 'statistics_digest.posts_read', value: posts_read(months_ago)}
+        {key: 'statistics_digest.posts_read', value: posts_read(months_ago)},
+        {key: 'statistics_digest.posts_liked', value: posts_liked(months_ago)},
+        {key: 'statistics_digest.topics_solved', value: topics_solved(months_ago)}
       ]
     }
 
@@ -248,6 +250,24 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
 
     repeat_new_users.count
+  end
+
+  def posts_liked(months_ago)
+    posts_liked = report.user_actions do |r|
+      r.months_ago months_ago
+      r.action_type 1
+    end
+
+    posts_liked[0]['user_action'].present? ? posts_liked[0]['user_action'] : nil
+  end
+
+  def topics_solved(months_ago)
+    topics_solved = report.user_actions do |r|
+      r.months_ago months_ago
+      r.action_type 15
+    end
+
+    topics_solved[0]['user_action'].present? ? topics_solved[0]['user_action'] : nil
   end
 
   def health( dau, mau)
