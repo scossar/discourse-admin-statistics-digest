@@ -163,7 +163,7 @@
                         <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
                             <tr>
                                 <td style="background-color:<%= bg_color -%>; color:<%= text_color -%>;font-size:12px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;text-align:center">
-                                    This summary is sent from <a style="text-decoration:none;" href=""><%= SiteSetting.title -%></a>. Click <a style="text-decoration:none;" href="">here</a> to unsubscribe.
+                                    <%=raw(t 'statistics_digest.unsubscribe', site_link: site_link("blue"), email_preferences_link: statistics_digest_link("blue")) %>
                                 </td>
                             </tr>
                             <tr>

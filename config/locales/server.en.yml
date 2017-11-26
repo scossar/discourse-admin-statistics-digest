@@ -2,6 +2,9 @@ en:
   site_settings:
     admin_statistics_digest_enabled: "Enable the Admin Statistics Digest"
   statistics_digest:
+    unsubscribe: "This summary was sent from %{site_link}. To stop receiving theses emails, change your settings %{email_preferences_link}."
+    here: "here"
+    visit_link: "Visit this link"
     title: "Key statistics for"
     active_users: "Active Users"
     posts_made: "Posts Created"
