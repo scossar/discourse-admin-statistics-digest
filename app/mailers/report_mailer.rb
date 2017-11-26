@@ -8,7 +8,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   helper_method :dir_for_locale, :logo_url, :header_color, :header_bgcolor, :anchor_color,
                 :bg_color, :text_color, :highlight_bgcolor, :highlight_color, :body_bgcolor,
                 :body_color, :report_date, :digest_title, :spacer_color, :table_border_style,
-                :site_link, :statistics_digest_link
+                :site_link, :statistics_digest_link, :superscript
 
   append_view_path Rails.root.join('plugins', 'discourse-admin-statistics-digest', 'app', 'views')
   default from: SiteSetting.notification_email
@@ -32,7 +32,10 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
         {key: 'statistics_digest.daily_active_users', value: dau},
         {key: 'statistics_digest.monthly_active_users', value: mau},
         {key: 'statistics_digest.dau_mau', value: "#{health}%",
-         description: 'statistics_digest.dau_mau_description'}
+         description_index: 0}
+      ],
+      descriptions: [
+        'statistics_digest.dau_mau_description'
       ]
     }
 
@@ -152,6 +155,10 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   def statistics_digest_link(color)
     "<a style='text-decoration:none;color:#{color}' href='#{Discourse.base_url}/admin/plugins/admin-statistics-digest' style='color: #{color}'>#{t 'statistics_digest.here'}</a>"
+  end
+
+  def superscript(count)
+    "<sup style='line-height:0;font-size:70%;vertical-align:top;mso-text-raise:60%'>[#{count}]</sup>"
   end
 
   private
