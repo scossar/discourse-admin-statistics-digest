@@ -7,7 +7,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   helper_method :dir_for_locale, :logo_url, :header_color, :header_bgcolor, :anchor_color,
                 :bg_color, :text_color, :highlight_bgcolor, :highlight_color, :body_bgcolor,
-                :body_color, :report_date, :digest_title, :spacer_color, :table_border_style
+                :body_color, :report_date, :digest_title, :spacer_color, :table_border_style,
+                :site_link, :statistics_digest_link
 
   append_view_path Rails.root.join('plugins', 'discourse-admin-statistics-digest', 'app', 'views')
   default from: SiteSetting.notification_email
@@ -91,6 +92,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     rtl? ? 'rtl' : 'ltr'
   end
 
+  # Todo: fix this.
   def logo_url
     logo_url = SiteSetting.digest_logo_url
     logo_url = SiteSetting.logo_url if logo_url.blank? || logo_url =~ /\.svg$/i
@@ -154,6 +156,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     unless total_rows - 1 == current_row
       "border-bottom:1px solid #dddddd;"
     end
+  end
+
+  def site_link(color)
+    "<a style='text-decoration:none;color:#{color}' href='#{Discourse.base_url}' style='color: #{color}'>#{SiteSetting.title}</a>"
+  end
+
+  def statistics_digest_link(color)
+    "<a style='text-decoration:none;color:#{color}' href='#{Discourse.base_url}/admin/plugins/admin-statistics-digest' style='color: #{color}'>#{t 'statistics_digest.here'}</a>"
   end
 
   private
