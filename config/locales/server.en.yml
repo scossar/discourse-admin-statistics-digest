@@ -7,7 +7,10 @@ en:
     visit_link: "Visit this link"
     title: "Key statistics for"
     active_users: "Active Users"
-    posts_created: "Posts Created"
+    posts_created: "Posts"
+    topic_replies_created: "Posts (excluding replies)"
+    topics_created: "Topics"
+    messages_created: "Messages"
     posts_read: "Posts Read"
     community_health_title: "Community Health"
     daily_active_users: "Daily Active Users"
@@ -19,4 +22,5 @@ en:
     user_visits: "User Visits"
     repeat_new_users: "Repeat New Users"
     content_title: "Content Created"
-    topics_made: "Topics Created"
+    user_actions_title: "User Actions"
+

@@ -16,7 +16,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   def digest(first_date, last_date)
     months_ago = 0
     active_users = active_users(months_ago)
-    posts_created = posts_created(months_ago)
+    posts_created = posts_created(months_ago, 'regular', false)
     dau = daily_active_users(months_ago)
     mau = active_users
     health = health(dau, mau)
@@ -50,19 +50,27 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       ]
     }
 
+    user_action_data = {
+      title_key: 'statistics_digest.user_actions_title',
+      fields: [
+        {key: 'statistics_digest.posts_read', value: posts_read(months_ago)}
+      ]
+    }
+
     content_data = {
       title_key: 'statistics_digest.content_title',
       fields: [
-        {key: 'statistics_digest.topics_made', value: topics_made(months_ago)},
-        {key: 'statistics_digest.posts_made', value: posts_created(months_ago)},
-        {key: 'statistics_digest.posts_read', value: posts_read(months_ago)}
+        {key: 'statistics_digest.topics_created', value: topics_created(months_ago, 'regular')},
+        {key: 'statistics_digest.topic_replies_created', value: posts_created(months_ago, 'regular', true)},
+        {key: 'statistics_digest.messages_created', value: topics_created(months_ago, 'private_message')},
       ]
     }
 
     data_array = [
       health_data,
       user_data,
-      content_data
+      content_data,
+      user_action_data
     ]
 
     @data = {
@@ -197,9 +205,11 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     daily_active_users[0]['dau'].present? ? daily_active_users[0]['dau'].round(2) : nil
   end
 
-  def posts_created(months_ago)
+  def posts_created(months_ago, archetype, exclude_topic = false)
     posts = report.posts_created do |r|
       r.months_ago months_ago
+      r.archetype archetype
+      r.exclude_topic exclude_topic
     end
 
     posts[0]['posts_created']
@@ -213,12 +223,13 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     posts[0]['posts_read']
   end
 
-  def topics_made(months_ago)
-    topics = report.topics_made do |r|
+  def topics_created(months_ago, archetype)
+    topics = report.topics_created do |r|
       r.months_ago months_ago
+      r.archetype archetype
     end
 
-    topics[0]['topics_made']
+    topics[0]['topics_created']
   end
 
   def new_users(months_ago)

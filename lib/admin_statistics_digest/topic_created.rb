@@ -1,17 +1,18 @@
 require_relative '../admin_statistics_digest/base_report'
 
-class AdminStatisticsDigest::TopicMade < AdminStatisticsDigest::BaseReport
+class AdminStatisticsDigest::TopicCreated < AdminStatisticsDigest::BaseReport
 
   provide_filter :months_ago
+  provide_filter :archetype
 
   def to_sql
     <<~SQL
 SELECT
-count(1) AS "topics_made"
+count(1) AS "topics_created"
 FROM "topics" "t"
 WHERE ("t"."created_at", "t"."created_at") OVERLAPS('#{filters.months_ago[:period_start]}', '#{filters.months_ago[:period_end]}')
 AND "t"."user_id" > 0
-AND "t"."archetype" = 'regular'
+AND "t"."archetype" = '#{filters.archetype}'
     SQL
   end
 

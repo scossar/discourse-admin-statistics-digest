@@ -28,6 +28,16 @@ class Filter
     filter[:datetime_range]
   end
 
+  def archetype(archetype = nil)
+    filter[:archetype] = archetype if archetype
+    filter[:archetype]
+  end
+
+  def exclude_topic(exclude_topic = nil)
+    filter[:exclude_topic] = exclude_topic if exclude_topic
+    filter[:exclude_topic]
+  end
+
   def method_missing(method_sym, *arguments, &block)
     if filter.respond_to?(method_sym)
       begin
