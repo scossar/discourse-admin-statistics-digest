@@ -19,8 +19,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     mau = user_visits(months_ago)
     health = (dau * 100 / mau).round(2)
 
-    report_date = "#{first_date.to_s(:short)} - #{last_date.to_s(:short)} #{last_date.strftime('%Y')}"
-    subject = "Discourse Admin Statistic Report #{report_date}"
+    report_date = report_date(months_ago)
+    subject = digest_title(months_ago)
 
     header_metadata = [
       {key: 'statistics_digest.active_users', value: active_users},
@@ -77,9 +77,9 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       health: health,
       data_array: data_array,
 
-      title: digest_title,
-      subject: digest_title,
-      report_date: report_date
+      title: digest_title(months_ago),
+      subject: digest_title(months_ago),
+      # report_date: report_date
     }
 
     admin_emails = User.where(admin: true).map(&:email).select {|e| e.include?('@')}
@@ -140,12 +140,12 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     '#222222'
   end
 
-  def report_date
-    "Oct 2017"
+  def report_date(months_ago)
+    months_ago.month.ago.strftime('%b %Y')
   end
 
-  def digest_title
-    "#{I18n.t('statistics_digest.title')} #{report_date}"
+  def digest_title(months_ago)
+    "#{I18n.t('statistics_digest.title')} #{report_date(months_ago)}"
   end
 
   def spacer_color(outer_count, inner_count = 0)
