@@ -18,8 +18,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     dau = daily_active_users(months_ago)
     mau = user_visits(months_ago)
     health = (dau * 100 / mau).round(2)
-
-    report_date = report_date(months_ago)
     subject = digest_title(months_ago)
 
     header_metadata = [
@@ -62,24 +60,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       content_data
     ]
 
-    limit = 5
     @data = {
-      users: active_users,
-
-      header_metadata: header_metadata,
       active_users: active_users,
       posts_made: posts_made(months_ago),
       posts_read: posts_read(months_ago),
-      new_users: new_users(months_ago),
-      repeat_new_users: repeat_new_users(months_ago, 1),
-      dau: dau,
-      mau: mau,
-      health: health,
+      header_metadata: header_metadata,
       data_array: data_array,
-
       title: digest_title(months_ago),
       subject: digest_title(months_ago),
-      # report_date: report_date
     }
 
     admin_emails = User.where(admin: true).map(&:email).select {|e| e.include?('@')}
