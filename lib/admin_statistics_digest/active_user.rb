@@ -8,16 +8,14 @@ class AdminStatisticsDigest::ActiveUser < AdminStatisticsDigest::BaseReport
   def to_sql
     months_ago_filter = if filters.months_ago
                           <<~SQL
-                          AND (
-("u"."last_seen_at", "u"."last_seen_at") OVERLAPS('#{filters.months_ago[:period_start]}', '#{filters.months_ago[:period_end]}')
-)
+                          AND (("u"."last_seen_at", "u"."last_seen_at") OVERLAPS('#{filters.months_ago[:period_start]}', '#{filters.months_ago[:period_end]}'))
                           SQL
                         else
                           nil
                         end
     select_days_in_period = if filters.months_ago
                               <<~SQL
-                              , EXTRACT(DAY FROM DATE '#{filters.months_ago[:period_end]}') AS "days_in_month",
+                              , EXTRACT(DAY FROM DATE '#{filters.months_ago[:period_end]}') AS "days_in_month"
                               SQL
                             else
                               nil
@@ -31,5 +29,4 @@ WHERE "u"."id" > 0
 #{months_ago_filter}
     SQL
   end
-
 end
