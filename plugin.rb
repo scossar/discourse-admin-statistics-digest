@@ -13,6 +13,8 @@ add_admin_route 'admin_statistics_digest.title', 'admin-statistics-digest'
 
 after_initialize do
 
+  require_dependency 'admin_constraint'
+
   module ::AdminStatisticsDigest
     class Engine < ::Rails::Engine
       engine_name PLUGIN_NAME
@@ -39,8 +41,8 @@ after_initialize do
   end
 
   AdminStatisticsDigest::Engine.routes.draw do
-    root to: 'admin_statistics_digest#index'
-    get 'preview', to: 'admin_statistics_digest#preview'
+    root to: 'admin_statistics_digest#index', constraints: AdminConstraint.new
+    get 'preview', to: 'admin_statistics_digest#preview', constraints: AdminConstraint.new
   end
 
   Discourse::Application.routes.append do
