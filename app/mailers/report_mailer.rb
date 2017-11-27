@@ -14,26 +14,26 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   default from: SiteSetting.notification_email
 
   def digest(months_ago)
-    active_users = active_users(months_ago)
-    inactive_users = all_users - active_users
-    posts_created = posts_created(months_ago, 'regular', false)
-    dau = daily_active_users(months_ago)
-    mau = active_users
-    health = health(dau, mau)
+    active_users_for_period = active_users(months_ago)
+    inactive_users_for_period = all_users - active_users_for_period
+    posts_created_for_period = posts_created(months_ago, 'regular', false)
+    dau_for_period = daily_active_users(months_ago)
+    mau_for_period = active_users_for_period
+    health_for_period = health(dau_for_period, mau_for_period)
     subject = digest_title(months_ago)
 
     header_metadata = [
-      {key: 'statistics_digest.active_users', value: active_users},
-      {key: 'statistics_digest.posts_created', value: posts_created},
+      {key: 'statistics_digest.active_users', value: active_users_for_period},
+      {key: 'statistics_digest.posts_created', value: posts_created_for_period},
       {key: 'statistics_digest.posts_read', value: posts_read(months_ago)}
     ]
 
     health_data = {
       title_key: 'statistics_digest.community_health_title',
       fields: [
-        {key: 'statistics_digest.daily_active_users', value: dau, description_index: 1},
-        {key: 'statistics_digest.monthly_active_users', value: mau},
-        {key: 'statistics_digest.dau_mau', value: "#{health}%",
+        {key: 'statistics_digest.daily_active_users', value: dau_for_period, description_index: 1},
+        {key: 'statistics_digest.monthly_active_users', value: mau_for_period},
+        {key: 'statistics_digest.dau_mau', value: "#{health_for_period}%",
          description_index: 2}
       ],
       descriptions: [
@@ -48,7 +48,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
         {key: 'statistics_digest.new_users', value: new_users(months_ago)},
         {key: 'statistics_digest.repeat_new_users', value: repeat_new_users(months_ago, 2)},
         {key: 'statistics_digest.user_visits', value: user_visits(months_ago)},
-        {key: 'statistics_digest.inactive_users', value: inactive_users}
+        {key: 'statistics_digest.inactive_users', value: inactive_users_for_period}
       ]
     }
 
@@ -79,9 +79,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     ]
 
     @data = {
-      active_users: active_users,
-      posts_created: posts_created,
-      posts_read: posts_read(months_ago),
       header_metadata: header_metadata,
       data_array: data_array,
       title: digest_title(months_ago),
