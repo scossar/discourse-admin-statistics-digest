@@ -21,7 +21,6 @@ after_initialize do
   end
 
   [
-    # '../../discourse-admin-statistics-digest/lib/admin_statistics_digest.rb',
     '../../discourse-admin-statistics-digest/lib/admin_statistics_digest/report.rb',
     '../../discourse-admin-statistics-digest/app/mailers/report_mailer.rb',
     '../../discourse-admin-statistics-digest/app/jobs/admin_statistics_digest.rb'
