@@ -32,10 +32,10 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     health_data = {
       title_key: 'statistics_digest.community_health_title',
       fields: [
-        {key: 'statistics_digest.daily_active_users', value: dau, description_index: 0},
+        {key: 'statistics_digest.daily_active_users', value: dau, description_index: 1},
         {key: 'statistics_digest.monthly_active_users', value: mau},
         {key: 'statistics_digest.dau_mau', value: "#{health}%",
-         description_index: 1}
+         description_index: 2}
       ],
       descriptions: [
         {key: 'statistics_digest.dau_description'},
