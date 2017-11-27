@@ -1,7 +1,8 @@
-require_relative '../mailers/report_mailer'
+# require_relative '../mailers/report_mailer'
 
-module Jobs
-  class AdminStatisticsDigest < Base
+module ::Jobs
+  class AdminStatisticsDigest < ::Jobs::Scheduled
+    every 2.minutes
     sidekiq_options 'retry' => true, 'queue' => 'critical'
 
     def execute(opts = nil)

@@ -7,14 +7,9 @@
 
 enabled_site_setting :admin_statistics_digest_enabled
 
-gem 'rufus-scheduler', '3.1.8'
-gem 'sidekiq-scheduler', '2.0.9'
-
 add_admin_route 'admin_statistics_digest.title', 'admin-statistics-digest'
 
 after_initialize do
-
-  load File.expand_path('../../discourse-admin-statistics-digest/lib/admin_statistics_digest.rb', __FILE__)
 
   module ::AdminStatisticsDigest
     class Engine < ::Rails::Engine
@@ -23,29 +18,12 @@ after_initialize do
     end
   end
 
-  # libs
-  load File.expand_path('../../discourse-admin-statistics-digest/lib/admin_statistics_digest/report.rb', __FILE__)
-
-   # mailers
-  load File.expand_path('../../discourse-admin-statistics-digest/app/mailers/report_mailer.rb', __FILE__)
-
-   # jobs
-  if Rails.env.development? || (defined?(Rails::Server) || defined?(Unicorn) || defined?(Puma))
-    require 'sidekiq/scheduler'
-
-    load File.expand_path('../../discourse-admin-statistics-digest/app/jobs/admin_statistics_digest.rb', __FILE__)
-
-    Sidekiq.configure_server do |config|
-
-      Sidekiq::Scheduler.enabled = true
-      Sidekiq::Scheduler.dynamic = true
-
-      config.on(:startup) do
-        AdminStatisticsDigest.reload_digest_report_schedule
-      end
-
-    end
-  end
+  [
+    '../../discourse-admin-statistics-digest/lib/admin_statistics_digest.rb',
+    '../../discourse-admin-statistics-digest/lib/admin_statistics_digest/report.rb',
+    '../../discourse-admin-statistics-digest/app/mailers/report_mailer.rb',
+    '../../discourse-admin-statistics-digest/app/jobs/admin_statistics_digest.rb'
+  ].each { |path| load File.expand_path(path, __FILE__ )}
 
   require_dependency 'application_controller'
   class AdminStatisticsDigest::AdminStatisticsDigestController < ::ApplicationController
