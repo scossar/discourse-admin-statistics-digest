@@ -13,8 +13,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   append_view_path Rails.root.join('plugins', 'discourse-admin-statistics-digest', 'app', 'views')
   default from: SiteSetting.notification_email
 
-  def digest(first_date, last_date)
-    months_ago = 0
+  def digest(months_ago)
+    # months_ago = 0
     active_users = active_users(months_ago)
     inactive_users = all_users - active_users
     posts_created = posts_created(months_ago, 'regular', false)

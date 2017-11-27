@@ -1,9 +1,11 @@
 require_relative '../lib/admin_statistics_digest/parse_to_cron_hash'
 module AdminStatisticsDigest
 
+=begin
   def self.plugin_name
     'admin-statistics-digest'
   end
+=end
 
   def self.reload_digest_report_schedule
     digest_schedule = AdminStatisticsDigest::EmailTimeout.get

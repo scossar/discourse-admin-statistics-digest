@@ -7,19 +7,21 @@
 
 enabled_site_setting :admin_statistics_digest_enabled
 
+PLUGIN_NAME = 'admin-statistics-digest'.freeze
+
 add_admin_route 'admin_statistics_digest.title', 'admin-statistics-digest'
 
 after_initialize do
 
   module ::AdminStatisticsDigest
     class Engine < ::Rails::Engine
-      engine_name ::AdminStatisticsDigest.plugin_name
+      engine_name PLUGIN_NAME
       isolate_namespace AdminStatisticsDigest
     end
   end
 
   [
-    '../../discourse-admin-statistics-digest/lib/admin_statistics_digest.rb',
+    # '../../discourse-admin-statistics-digest/lib/admin_statistics_digest.rb',
     '../../discourse-admin-statistics-digest/lib/admin_statistics_digest/report.rb',
     '../../discourse-admin-statistics-digest/app/mailers/report_mailer.rb',
     '../../discourse-admin-statistics-digest/app/jobs/admin_statistics_digest.rb'
