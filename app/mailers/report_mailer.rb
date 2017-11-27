@@ -14,7 +14,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   default from: SiteSetting.notification_email
 
   def digest(months_ago)
-    # months_ago = 0
     active_users = active_users(months_ago)
     inactive_users = all_users - active_users
     posts_created = posts_created(months_ago, 'regular', false)
