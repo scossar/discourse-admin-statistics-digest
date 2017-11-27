@@ -33,7 +33,8 @@ after_initialize do
     end
 
     def preview
-      AdminStatisticsDigest::ReportMailer.digest(30.days.ago.to_date, Date.today).deliver_now
+      # Send the preview for the current month. The month could be added as a parameter.
+      AdminStatisticsDigest::ReportMailer.digest(0).deliver_now
       render json: { success: true }
     end
   end

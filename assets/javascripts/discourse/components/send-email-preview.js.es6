@@ -9,7 +9,6 @@ export default Ember.Component.extend(Config, Helper, {
 
   actions: {
     submit() {
-      console.log('preview submit');
       ajax(`${this.baseUrl}/preview.json`)
         .then(() => this._showNotice()).catch(popupAjaxError);
     },
