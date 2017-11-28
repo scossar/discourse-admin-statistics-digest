@@ -180,19 +180,11 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.months_ago months_ago if months_ago
     end
 
-    active_users[0]['active_users']
+    active_users[0]['active_users'] ? active_users[0]['active_users'] : 0
   end
 
   def all_users
     User.where('id > 0').count
-  end
-
-  def monthly_active_users(months_ago)
-    active_users = report.active_daily_users do |r|
-      r.months_ago months_ago
-    end
-
-    active_users[0]['active_users']
   end
 
   def user_visits(months_ago)
