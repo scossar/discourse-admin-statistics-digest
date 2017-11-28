@@ -145,7 +145,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   end
 
   def report_date(months_ago)
-    months_ago.month.ago.strftime('%b %Y')
+    months_ago.month.ago.strftime('%B %Y')
   end
 
   def digest_title(months_ago)
