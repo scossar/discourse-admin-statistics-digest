@@ -5,7 +5,7 @@ en:
     unsubscribe: "This summary was sent from %{site_link}. To stop receiving theses emails, change your settings %{email_preferences_link}."
     here: "here"
     visit_link: "Visit this link"
-    title: "Key statistics for"
+    title: "Key Statistics for"
     active_users: "Active Users"
     inactive_users: "Inactive Users"
     posts_created: "Posts"
