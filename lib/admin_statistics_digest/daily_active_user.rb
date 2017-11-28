@@ -15,7 +15,8 @@ AND "uv"."visited_at" <= '#{filters.months_ago[:period_end]}'
 GROUP BY "uv"."visited_at")
 
 SELECT
-sum(daily_visits) / EXTRACT(DAY FROM DATE '#{filters.months_ago[:period_end]}')  AS "dau"
+sum(daily_visits) as "visits",
+EXTRACT(DAY FROM DATE '#{filters.months_ago[:period_end]}')  AS "days_in_period"
 FROM daily_visits
     SQL
   end

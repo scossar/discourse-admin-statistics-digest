@@ -14,6 +14,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   default from: SiteSetting.notification_email
 
   def digest(months_ago)
+    months_ago = 2
     active_users_for_period = active_users(months_ago)
     inactive_users_for_period = all_users - active_users_for_period
     posts_created_for_period = posts_created(months_ago, 'regular', false)
@@ -200,7 +201,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.months_ago months_ago
     end
 
-    daily_active_users[0]['dau'].round(2) if daily_active_users[0]['dau'].is_a? Numeric
+    visits = daily_active_users[0]['visits']
+    days = daily_active_users[0]['days_in_period']
+
+    if visits.is_a? Numeric
+      (visits/days).round(2)
+    else
+      0
+    end
   end
 
   def posts_created(months_ago, archetype, exclude_topic = false)
@@ -218,7 +226,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.months_ago months_ago
     end
 
-    posts[0]['posts_read']
+    posts[0]['posts_read'] ? posts[0]['posts_read'] : 0
   end
 
   def topics_created(months_ago, archetype)
@@ -274,7 +282,11 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   end
 
   def health( dau, mau)
-    (dau * 100 / mau).round(2)
+    if (dau > 0 && mau > 0)
+      (dau * 100 / mau).round(2)
+    else
+      0
+    end
   end
 
   def report
