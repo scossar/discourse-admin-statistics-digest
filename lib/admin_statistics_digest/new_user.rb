@@ -30,7 +30,9 @@ WHERE ("uv"."visited_at", "uv"."visited_at") OVERLAPS('#{filters.months_ago[:per
 GROUP BY "uv"."user_id"
 )
 
-SELECT * FROM "new_users" "nu"
+SELECT
+count(1) as "users"
+FROM "new_users" "nu"
 JOIN "visit_counts" "vc"
 ON "vc"."user_id" = "nu"."id"
 #{repeats_filter}

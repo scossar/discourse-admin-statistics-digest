@@ -243,17 +243,16 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.months_ago months_ago
     end
 
-    new_users.count
+    new_users[0]['users']
   end
 
   def repeat_new_users(months_ago, repeats = 2)
     repeat_new_users = report.new_users do |r|
       r.months_ago months_ago
       r.repeats repeats
-
     end
 
-    repeat_new_users.count
+    repeat_new_users[0]['users']
   end
 
   def posts_liked(months_ago)
@@ -289,5 +288,4 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   def report
     @report ||= AdminStatisticsDigest::Report.new
   end
-
 end
