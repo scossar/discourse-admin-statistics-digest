@@ -95,7 +95,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     rtl? ? 'rtl' : 'ltr'
   end
 
-  # Todo: fix this.
   def logo_url
     logo_url = SiteSetting.digest_logo_url
     logo_url = SiteSetting.logo_url if logo_url.blank? || logo_url =~ /\.svg$/i
@@ -104,6 +103,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     if logo_url !~ /http(s)?\:\/\//
       logo_url = "#{Discourse.base_url}#{logo_url}"
     end
+
     logo_url
   end
 
@@ -208,7 +208,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.months_ago months_ago
     end
 
-    daily_active_users[0]['dau'].present? ? daily_active_users[0]['dau'].round(2) : nil
+    daily_active_users[0]['dau'].round(2)
   end
 
   def posts_created(months_ago, archetype, exclude_topic = false)
@@ -262,7 +262,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.action_type 1
     end
 
-    posts_liked[0]['user_action'].present? ? posts_liked[0]['user_action'] : nil
+    posts_liked[0]['user_action']
   end
 
   def topics_solved(months_ago)
@@ -271,7 +271,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.action_type 15
     end
 
-    topics_solved[0]['user_action'].present? ? topics_solved[0]['user_action'] : nil
+    topics_solved[0]['user_action']
   end
 
   def flagged_posts(months_ago)
@@ -279,17 +279,11 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.months_ago months_ago
     end
 
-    flagged_posts[0]['flagged_posts'].present? ? flagged_posts[0]['flagged_posts'] : nil
+    flagged_posts[0]['flagged_posts']
   end
 
   def health( dau, mau)
     (dau * 100 / mau).round(2)
-  end
-
-  def active(months_ago)
-    report.active_users do |r|
-      r.months_ago months_ago
-    end
   end
 
   def report
