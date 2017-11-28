@@ -19,14 +19,16 @@ SQL
 WITH "new_users" AS (
 SELECT "u"."id"
 FROM "users" "u"
-WHERE ("u"."created_at", "u"."created_at") OVERLAPS('#{filters.months_ago[:period_start]}', '#{filters.months_ago[:period_end]}')
+WHERE "u"."created_at" >= '#{filters.months_ago[:period_start]}'
+AND "u"."created_at" <= '#{filters.months_ago[:period_end]}'
 ),
 "visit_counts" AS (
 SELECT
 count("uv"."user_id") AS "user_visits",
 "uv"."user_id"
 FROM "user_visits" "uv"
-WHERE ("uv"."visited_at", "uv"."visited_at") OVERLAPS('#{filters.months_ago[:period_start]}', '#{filters.months_ago[:period_end]}')
+WHERE "uv"."visited_at" >= '#{filters.months_ago[:period_start]}'
+AND "uv"."visited_at" <= '#{filters.months_ago[:period_end]}'
 GROUP BY "uv"."user_id"
 )
 

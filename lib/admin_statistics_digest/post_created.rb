@@ -20,7 +20,8 @@ count(1) AS "posts_created"
 FROM "posts" "p"
 JOIN "topics" "t"
 ON "t"."id" = "p"."topic_id"
-WHERE ("p"."created_at", "p"."created_at") OVERLAPS('#{filters.months_ago[:period_start]}', '#{filters.months_ago[:period_end]}')
+WHERE "p"."created_at" >= '#{filters.months_ago[:period_start]}'
+AND "p"."created_at" <= '#{filters.months_ago[:period_end]}'
 AND "t"."archetype" = '#{filters.archetype}'
 AND "p"."user_id" > 0
 #{exclude_topic_filter}

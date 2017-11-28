@@ -9,7 +9,8 @@ class AdminStatisticsDigest::UserVisit < AdminStatisticsDigest::BaseReport
 SELECT
 count(1) as "user_visits"
 FROM "user_visits" "uv"
-WHERE ("uv"."visited_at", "uv"."visited_at") OVERLAPS('#{filters.months_ago[:period_start]}', '#{filters.months_ago[:period_end]}')
+WHERE "uv"."visited_at" >= '#{filters.months_ago[:period_start]}'
+AND "uv"."visited_at" <= '#{filters.months_ago[:period_end]}'
     SQL
   end
 end

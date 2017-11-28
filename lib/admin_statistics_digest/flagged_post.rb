@@ -11,7 +11,8 @@ count(1) as "flagged_posts"
 FROM "post_actions" "pa"
 JOIN "post_action_types" "pat"
 ON "pat"."id" = "pa"."post_action_type_id"
-WHERE ("pa"."created_at", "pa"."created_at") OVERLAPS('#{filters.months_ago[:period_start]}', '#{filters.months_ago[:period_end]}')
+WHERE "pa"."created_at" >= '#{filters.months_ago[:period_start]}'
+AND "pa"."created_at" <= '#{filters.months_ago[:period_end]}'
 AND "pat"."is_flag" = 't'
 AND "pa"."agreed_at" IS NOT NULL
     SQL

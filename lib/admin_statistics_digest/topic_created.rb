@@ -10,7 +10,8 @@ class AdminStatisticsDigest::TopicCreated < AdminStatisticsDigest::BaseReport
 SELECT
 count(1) AS "topics_created"
 FROM "topics" "t"
-WHERE ("t"."created_at", "t"."created_at") OVERLAPS('#{filters.months_ago[:period_start]}', '#{filters.months_ago[:period_end]}')
+WHERE "t"."created_at" >= '#{filters.months_ago[:period_start]}'
+AND "t"."created_at" <= '#{filters.months_ago[:period_end]}'
 AND "t"."user_id" > 0
 AND "t"."archetype" = '#{filters.archetype}'
     SQL

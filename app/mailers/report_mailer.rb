@@ -200,7 +200,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.months_ago months_ago
     end
 
-    daily_active_users[0]['dau'].round(2)
+    daily_active_users[0]['dau'].round(2) if daily_active_users[0]['dau'].is_a? Numeric
   end
 
   def posts_created(months_ago, archetype, exclude_topic = false)

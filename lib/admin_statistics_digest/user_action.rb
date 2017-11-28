@@ -9,7 +9,8 @@ class AdminStatisticsDigest::UserAction < AdminStatisticsDigest::BaseReport
     <<~SQL
 SELECT count(1) AS "user_action"
 FROM "user_actions" "ua"
-WHERE ("ua"."created_at", "ua"."created_at") OVERLAPS('#{filters.months_ago[:period_start]}', '#{filters.months_ago[:period_end]}')
+WHERE "ua"."created_at" >= '#{filters.months_ago[:period_start]}'
+AND "ua"."created_at" <= '#{filters.months_ago[:period_end]}'
 AND "ua"."action_type" = '#{filters.action_type}'
     SQL
   end
