@@ -18,19 +18,27 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     months_ago = [0, 1, 2, 3]
 
     active_users_for_period = active_users(months_ago)
+    visits_for_period = user_visits(months_ago)
 
   end
 
 
   private
 
-  def active_users(months_ago = nil)
+  def active_users(months_ago)
     active_users = report.active_users do |r|
-      r.months_ago months_ago if months_ago
+      r.months_ago months_ago
     end
 
     puts "ACTIVEUSERS #{active_users}"
-    active_users[0]['active_users'] ? active_users[0]['active_users'] : 0
+  end
+
+  def user_visits(months_ago)
+    user_visits = report.user_visits do |r|
+      r.months_ago months_ago
+    end
+
+    puts "USERVISITS #{user_visits}"
   end
 
 
