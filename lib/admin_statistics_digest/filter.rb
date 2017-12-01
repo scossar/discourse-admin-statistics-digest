@@ -13,9 +13,9 @@ class Filter
     filter.to_h.empty?
   end
 
-  def months_ago(num_months = nil)
-    filter[:datetime_range] = {period_start: num_months.month.ago.beginning_of_month, period_end: num_months.month.ago.end_of_month } if num_months
-    filter[:datetime_range]
+  def months_ago(months = nil)
+    filter[:months_ago] = months if months
+    filter[:months_ago]
   end
 
   def repeats(repeats = nil)
