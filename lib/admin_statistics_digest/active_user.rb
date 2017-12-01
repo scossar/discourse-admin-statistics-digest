@@ -6,18 +6,29 @@ class AdminStatisticsDigest::ActiveUser < AdminStatisticsDigest::BaseReport
 
   def to_sql
     <<~SQL
-WITH "visiting_users" AS (
+WITH "periods" AS (
 SELECT
-count(1) as "visit"
+"months_ago",
+date_trunc('month', CURRENT_DATE) - INTERVAL '1 months' * "months_ago" AS "period_start",
+date_trunc('month', CURRENT_DATE) - INTERVAL '1 months' * "months_ago" + INTERVAL '1 month' - INTERVAL '1 second' AS "period_end"
+FROM unnest(ARRAY #{filters.months_ago}) as "months_ago"
+),
+"visiting_users" AS (
+SELECT
+DISTINCT "uv"."user_id" AS "user_id",
+"p"."months_ago" AS "months_ago"
 FROM "user_visits" "uv"
-WHERE "uv"."visited_at" >= '#{filters.months_ago[:period_start]}'
-AND "uv"."visited_at" <= '#{filters.months_ago[:period_end]}'
-GROUP BY "uv"."user_id"
+JOIN "periods" "p"
+ON "uv"."visited_at" >= "p"."period_start"
+AND "uv"."visited_at" <= "p"."period_end"
 )
 
 SELECT
-count(1) as "active_users"
-FROM "visiting_users"
+count(1) AS "monthly_active_users",
+"vu"."months_ago" AS "months_ago"
+FROM "visiting_users" "vu"
+GROUP BY "vu"."months_ago"
+ORDER BY "vu"."months_ago"
 SQL
   end
 end
