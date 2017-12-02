@@ -17,13 +17,22 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     # set months_ago to 1 for testing
     months_ago = [0, 1, 2, 3]
 
+    all_users_for_period = all_users(months_ago)
     active_users_for_period = active_users(months_ago)
     visits_for_period = user_visits(months_ago)
-
+    dau = daily_active_users(months_ago)
   end
 
 
   private
+
+  def all_users(months_ago)
+    all_users = report.all_users do |r|
+      r.months_ago months_ago
+    end
+
+    puts "ALLUSERS #{all_users}"
+  end
 
   def active_users(months_ago)
     active_users = report.active_users do |r|
@@ -39,6 +48,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
 
     puts "USERVISITS #{user_visits}"
+  end
+
+  def daily_active_users(months_ago)
+    daily_active_users = report.daily_active_users do |r|
+      r.months_ago months_ago
+    end
+
+    puts "DAU #{daily_active_users}"
   end
 
 

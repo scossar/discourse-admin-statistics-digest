@@ -1,3 +1,4 @@
+require_relative './all_user'
 require_relative './active_user'
 require_relative './post_read'
 require_relative './post_created'
@@ -11,6 +12,7 @@ require_relative './flagged_post'
 class AdminStatisticsDigest::Report
 
   REPORTS = {
+    all_users: AdminStatisticsDigest::AllUser,
     active_users: AdminStatisticsDigest::ActiveUser,
     posts_read: AdminStatisticsDigest::PostRead,
     posts_created: AdminStatisticsDigest::PostCreated,
