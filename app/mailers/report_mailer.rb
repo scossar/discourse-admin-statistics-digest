@@ -17,10 +17,13 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     # set months_ago to 1 for testing
     months_ago = [0, 1, 2, 3]
 
+    # users
     all_users_for_period = all_users(months_ago)
     active_users_for_period = active_users(months_ago)
     visits_for_period = user_visits(months_ago)
     dau = daily_active_users(months_ago)
+    period_new_users = new_users(months_ago)
+    period_repeat_new_users = new_users(months_ago, repeats: 2)
 
     # actions
     period_flags = flagged_posts(months_ago)
@@ -67,6 +70,15 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
 
     puts "FLAGGED POSTS #{flagged_posts}"
+  end
+
+  def new_users(months_ago, repeats: 1)
+    new_users = report.new_users do |r|
+      r.months_ago months_ago
+      r.repeats repeats
+    end
+
+    puts "NEW USERS #{new_users}"
   end
 
 

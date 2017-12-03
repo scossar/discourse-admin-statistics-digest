@@ -1,43 +1,52 @@
 require_relative '../admin_statistics_digest/base_report'
 
 class AdminStatisticsDigest::NewUser < AdminStatisticsDigest::BaseReport
-
   provide_filter :months_ago
   provide_filter :repeats
 
 
   def to_sql
-    repeats_filter = if filters.repeats
-                       <<~SQL
-   WHERE "vc"."user_visits" >= #{filters.repeats}
-SQL
-                     else
-                       nil
-                     end
-
     <<~SQL
-WITH "new_users" AS (
-SELECT "u"."id"
-FROM "users" "u"
-WHERE "u"."created_at" >= '#{filters.months_ago[:period_start]}'
-AND "u"."created_at" <= '#{filters.months_ago[:period_end]}'
-),
-"visit_counts" AS (
+WITH periods AS (
 SELECT
-count("uv"."user_id") AS "user_visits",
-"uv"."user_id"
-FROM "user_visits" "uv"
-WHERE "uv"."visited_at" >= '#{filters.months_ago[:period_start]}'
-AND "uv"."visited_at" <= '#{filters.months_ago[:period_end]}'
-GROUP BY "uv"."user_id"
+months_ago,
+date_trunc('month', CURRENT_DATE) - INTERVAL '1 months' * months_ago AS period_start,
+date_trunc('month', CURRENT_DATE) - INTERVAL '1 months' * months_ago + INTERVAL '1 month' - INTERVAL '1 second' AS period_end
+FROM unnest(ARRAY #{filters.months_ago}) AS months_ago
+),
+period_new_users AS (
+SELECT
+p.months_ago,
+u.id AS user_id
+FROM
+users u
+JOIN periods p
+ON u.created_at >= p.period_start
+AND u.created_at <= p.period_end
+),
+period_user_visits AS (
+SELECT
+uv.user_id,
+p.months_ago,
+count(uv.user_id) as visits
+FROM user_visits uv
+JOIN periods p
+ON uv.visited_at >= p.period_start
+AND uv.visited_at <= p.period_end
+GROUP BY p.months_ago, uv.user_id
+ORDER BY p.months_ago, visits DESC
 )
 
 SELECT
-count(1) as "users"
-FROM "new_users" "nu"
-JOIN "visit_counts" "vc"
-ON "vc"."user_id" = "nu"."id"
-#{repeats_filter}
+puv.months_ago,
+count(1)
+FROM period_user_visits puv
+JOIN period_new_users pnu
+ON pnu.user_id = puv.user_id
+AND pnu.months_ago = puv.months_ago
+WHERE puv.visits >= #{filters.repeats}
+GROUP BY puv.months_ago
+ORDER BY puv.months_ago
     SQL
   end
 
