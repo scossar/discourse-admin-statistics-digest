@@ -21,6 +21,9 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     active_users_for_period = active_users(months_ago)
     visits_for_period = user_visits(months_ago)
     dau = daily_active_users(months_ago)
+
+    # actions
+    period_flags = flagged_posts(months_ago)
   end
 
 
@@ -56,6 +59,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
 
     puts "DAU #{daily_active_users}"
+  end
+
+  def flagged_posts(months_ago)
+    flagged_posts = report.flagged_posts do |r|
+      r.months_ago months_ago
+    end
+
+    puts "FLAGGED POSTS #{flagged_posts}"
   end
 
 
