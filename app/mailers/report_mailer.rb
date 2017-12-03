@@ -25,6 +25,9 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     period_new_users = new_users(months_ago)
     period_repeat_new_users = new_users(months_ago, repeats: 2)
 
+    # content
+    period_posts_created = posts_created(months_ago, archetype: 'regular')
+
     # actions
     period_flags = flagged_posts(months_ago)
   end
@@ -87,6 +90,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.archetype archetype
       r.exclude_topic exclude_topic
     end
+
+    puts "POSTS CREATED #{posts_created}"
   end
 
 

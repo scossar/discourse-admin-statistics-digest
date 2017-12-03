@@ -33,7 +33,7 @@ ON p.created_at >= pd.period_start
 AND p.created_at <= pd.period_end
 JOIN topics t
 ON t.id = p.topic_id
-WHERE t.archetype = #{filters.archetype}
+WHERE t.archetype = '#{filters.archetype}'
 AND p.user_id > 0
 #{exclude_topic_filter}
 GROUP BY pd.months_ago
