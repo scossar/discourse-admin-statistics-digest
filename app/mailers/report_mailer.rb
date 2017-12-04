@@ -22,6 +22,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     period_active_users = active_users(months_ago)
     period_visits = user_visits(months_ago)
     period_dau = daily_active_users(months_ago)
+    period_health = health(months_ago)
     period_new_users = new_users(months_ago)
     period_repeat_new_users = new_users(months_ago, repeats: 2)
 
@@ -129,7 +130,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.months_ago months_ago
     end
 
-    puts "ALL USERS COMPARE #{compare_with_previous(all_users, 'all_users')}"
+    compare_with_previous(all_users, 'all_users')
   end
 
   def new_users(months_ago, repeats: 1)
@@ -138,7 +139,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.repeats repeats
     end
 
-    puts "NEW USERS COMPARE #{compare_with_previous( new_users, 'new_users')}"
+    compare_with_previous( new_users, 'new_users')
   end
 
   def active_users(months_ago)
@@ -146,7 +147,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.months_ago months_ago
     end
 
-    puts "ACTIVEUSERS COMPARE #{compare_with_previous(active_users, 'active_users')}"
+    compare_with_previous(active_users, 'active_users')
   end
 
   def user_visits(months_ago)
@@ -154,7 +155,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.months_ago months_ago
     end
 
-    puts "USERVISITS COMPARE #{compare_with_previous(user_visits, 'user_visits')}"
+    compare_with_previous(user_visits, 'user_visits')
   end
 
   def daily_active_users(months_ago)
@@ -162,7 +163,38 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.months_ago months_ago
     end
 
-    puts "DAU COMPARE #{compare_with_previous(daily_active_users, 'daily_active_users')}"
+    compare_with_previous(daily_active_users, 'daily_active_users')
+  end
+
+  # todo: this is making a couple of extra queries. It could use the existing dau/mau data hash
+  # but thet will limit the ability to get comparisons for more months if we choose to do that
+  # in the future.
+  def health(months_ago, display_threshold: -20)
+    daily_active_users = report.daily_active_users do |r|
+      r.months_ago months_ago
+    end
+
+    monthly_active_users = report.active_users do |r|
+      r.months_ago months_ago
+    end
+
+    current_dau = value_for_key(daily_active_users, 0, 'daily_active_users')
+    prev_dau = value_for_key(daily_active_users, 1, 'daily_active_users')
+    current_mau = value_for_key(monthly_active_users, 0, 'active_users')
+    prev_mau = value_for_key(monthly_active_users, 1, 'active_users')
+
+    current_health = calculate_health(current_dau, current_mau)
+    prev_health = calculate_health(prev_dau, prev_mau)
+    # todo: is there a standard way of comparing percentages?
+    compare = current_health - prev_health
+
+    {
+      current: format_percent(current_health),
+      previous: format_percent(prev_health),
+      compare: compare,
+      formatted_compare: format_percent(compare.round(2)),
+      display: compare > display_threshold
+    }
   end
 
   # content
@@ -174,7 +206,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.exclude_topic exclude_topic if exclude_topic
     end
 
-    puts "POSTS CREATED COMPARE #{compare_with_previous(posts_created, 'posts_created')}"
+    compare_with_previous(posts_created, 'posts_created')
   end
 
   def topics_created(months_ago, archetype: 'regular')
@@ -183,7 +215,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.archetype archetype
     end
 
-    puts "TOPICS CREATED COMPARE #{compare_with_previous(topics_created, 'topics_created')}"
+    compare_with_previous(topics_created, 'topics_created')
   end
 
   # actions
@@ -193,7 +225,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.months_ago months_ago
     end
 
-    puts "POSTS READ COMPARE #{compare_with_previous(posts_read, 'posts_read')}"
+    compare_with_previous(posts_read, 'posts_read')
   end
 
   def flagged_posts(months_ago)
@@ -201,7 +233,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.months_ago months_ago
     end
 
-    puts "FLAGGED POSTS COMPARE #{compare_with_previous(flagged_posts, 'flagged_posts')}"
+    compare_with_previous(flagged_posts, 'flagged_posts')
   end
 
   def user_actions(months_ago, action_type:)
@@ -210,10 +242,9 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.action_type action_type
     end
 
-    puts "USER ACTIONS COMPARE #{compare_with_previous(user_actions, 'actions')}"
+    compare_with_previous(user_actions, 'actions')
   end
 
-  # todo: make sure all queries default to 0. Double check conditional.
   def percent_diff(current, previous)
     if current && previous && previous > 0
       (current - previous) * 100.0 / previous
@@ -228,8 +259,12 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     arr[pos][key] if arr[pos]
   end
 
-  def formatted_diff(diff)
+  def format_diff(diff)
     sprintf("%+d%", diff)
+  end
+
+  def format_percent(num)
+    "#{num}%"
   end
 
   def compare_with_previous(arr, key, display_threshold = -20)
@@ -237,7 +272,21 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     previous = value_for_key(arr, 1, key)
     compare = percent_diff(current, previous)
 
-    {current: current, previous: previous, compare: compare, formatted_compare: formatted_diff(compare), display: compare > display_threshold}
+    {
+      current: current,
+      previous: previous,
+      compare: compare,
+      formatted_compare: format_diff(compare),
+      display: compare > display_threshold
+    }
+  end
+
+  def calculate_health(dau, mau)
+    if dau > 0 && mau > 0
+      (dau * 100 / mau).round(2)
+    else
+      0
+    end
   end
 
   def report
