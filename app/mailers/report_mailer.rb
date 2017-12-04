@@ -30,11 +30,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     period_responses = posts_created(months_ago, archetype: 'regular', exclude_topic: true)
 
     # actions
+    period_posts_read = posts_read(months_ago)
     period_flags = flagged_posts(months_ago)
   end
 
 
   private
+
+  # users
 
   def all_users(months_ago)
     all_users = report.all_users do |r|
@@ -42,6 +45,15 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
 
     puts "ALLUSERS #{all_users}"
+  end
+
+  def new_users(months_ago, repeats: 1)
+    new_users = report.new_users do |r|
+      r.months_ago months_ago
+      r.repeats repeats
+    end
+
+    puts "NEW USERS #{new_users}"
   end
 
   def active_users(months_ago)
@@ -68,22 +80,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     puts "DAU #{daily_active_users}"
   end
 
-  def flagged_posts(months_ago)
-    flagged_posts = report.flagged_posts do |r|
-      r.months_ago months_ago
-    end
-
-    puts "FLAGGED POSTS #{flagged_posts}"
-  end
-
-  def new_users(months_ago, repeats: 1)
-    new_users = report.new_users do |r|
-      r.months_ago months_ago
-      r.repeats repeats
-    end
-
-    puts "NEW USERS #{new_users}"
-  end
+  # content
 
   def posts_created(months_ago, archetype: 'regular', exclude_topic: nil)
     posts_created = report.posts_created do |r|
@@ -94,6 +91,26 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
     puts "POSTS CREATED #{posts_created}"
   end
+
+  # actions
+
+  def posts_read(months_ago)
+    posts_read = report.posts_read do |r|
+      r.months_ago months_ago
+    end
+
+    puts "POSTS READ #{posts_read}"
+  end
+
+  def flagged_posts(months_ago)
+    flagged_posts = report.flagged_posts do |r|
+      r.months_ago months_ago
+    end
+
+    puts "FLAGGED POSTS #{flagged_posts}"
+  end
+
+
 
 
   def report
