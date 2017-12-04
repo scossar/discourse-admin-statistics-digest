@@ -84,11 +84,11 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     puts "NEW USERS #{new_users}"
   end
 
-  def posts_created(months_ago, archetype: 'regular', exclude_topic: false)
+  def posts_created(months_ago, archetype: 'regular', exclude_topic: nil)
     posts_created = report.posts_created do |r|
       r.months_ago months_ago
       r.archetype archetype
-      r.exclude_topic exclude_topic
+      r.exclude_topic exclude_topic if exclude_topic
     end
 
     puts "POSTS CREATED #{posts_created}"
