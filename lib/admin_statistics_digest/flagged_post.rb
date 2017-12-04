@@ -15,14 +15,14 @@ FROM unnest(ARRAY #{filters.months_ago}) AS months_ago
 
 SELECT
 p.months_ago,
-count(1) AS flag_count
+count(pat.id) AS flag_count
 FROM post_actions pa
 JOIN post_action_types pat
 ON pat.id = pa.post_action_type_id
-JOIN periods p
+AND pat.is_flag = 't'
+RIGHT JOIN periods p
 ON pa.created_at >= p.period_start
 AND pa.created_at <= p.period_end
-WHERE pat.is_flag = 't'
 GROUP BY p.months_ago
 ORDER BY p.months_ago
     SQL
