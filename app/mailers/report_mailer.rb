@@ -18,10 +18,10 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     months_ago = [0, 1, 2, 3]
 
     # users
-    all_users_for_period = all_users(months_ago)
-    active_users_for_period = active_users(months_ago)
-    visits_for_period = user_visits(months_ago)
-    dau = daily_active_users(months_ago)
+    period_all_users = all_users(months_ago)
+    period_active_users = active_users(months_ago)
+    period_visits = user_visits(months_ago)
+    period_dau = daily_active_users(months_ago)
     period_new_users = new_users(months_ago)
     period_repeat_new_users = new_users(months_ago, repeats: 2)
 
