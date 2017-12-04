@@ -28,6 +28,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     # content
     period_posts = posts_created(months_ago, archetype: 'regular')
     period_responses = posts_created(months_ago, archetype: 'regular', exclude_topic: true)
+    period_topics = topics_created(months_ago)
 
     # actions
     period_posts_read = posts_read(months_ago)
@@ -90,6 +91,15 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
 
     puts "POSTS CREATED #{posts_created}"
+  end
+
+  def topics_created(months_ago, archetype: 'regular')
+    topics_created = report.topics_created do |r|
+      r.months_ago months_ago
+      r.archetype archetype
+    end
+
+    puts "TOPICS CREATED #{topics_created}"
   end
 
   # actions
