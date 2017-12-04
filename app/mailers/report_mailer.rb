@@ -33,6 +33,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     # actions
     period_posts_read = posts_read(months_ago)
     period_flags = flagged_posts(months_ago)
+    period_likes = user_actions(months_ago, action_type: 1)
   end
 
 
@@ -118,6 +119,15 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
 
     puts "FLAGGED POSTS #{flagged_posts}"
+  end
+
+  def user_actions(months_ago, action_type:)
+    user_actions = report.user_actions do |r|
+      r.months_ago months_ago
+      r.action_type action_type
+    end
+
+    puts "USER ACTIONS #{user_actions}"
   end
 
 

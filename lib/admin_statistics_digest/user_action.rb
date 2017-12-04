@@ -7,11 +7,24 @@ class AdminStatisticsDigest::UserAction < AdminStatisticsDigest::BaseReport
 
   def to_sql
     <<~SQL
-SELECT count(1) AS "user_action"
-FROM "user_actions" "ua"
-WHERE "ua"."created_at" >= '#{filters.months_ago[:period_start]}'
-AND "ua"."created_at" <= '#{filters.months_ago[:period_end]}'
-AND "ua"."action_type" = '#{filters.action_type}'
+WITH periods AS (
+SELECT
+months_ago,
+date_trunc('month', CURRENT_DATE) - INTERVAL '1 months' * months_ago AS period_start,
+date_trunc('month', CURRENT_DATE) - INTERVAL '1 months' * months_ago + INTERVAL '1 month' - INTERVAL '1 second' AS period_end
+FROM unnest(ARRAY #{filters.months_ago}) as months_ago
+)
+
+SELECT
+p.months_ago,
+count(ua.id) as actions
+FROM user_actions ua
+RIGHT JOIN periods p
+ON ua.created_at >= p.period_start
+AND ua.created_at <= p.period_end
+AND ua.action_type = #{filters.action_type}
+GROUP BY p.months_ago
+ORDER BY p.months_ago
     SQL
   end
 end
