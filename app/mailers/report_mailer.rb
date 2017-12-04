@@ -20,21 +20,92 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     # users
     period_all_users = all_users(months_ago)
     period_active_users = active_users(months_ago)
-    period_visits = user_visits(months_ago)
+    period_user_visits = user_visits(months_ago)
     period_dau = daily_active_users(months_ago)
     period_health = health(months_ago)
     period_new_users = new_users(months_ago)
     period_repeat_new_users = new_users(months_ago, repeats: 2)
 
     # content
-    period_posts = posts_created(months_ago, archetype: 'regular')
-    period_responses = posts_created(months_ago, archetype: 'regular', exclude_topic: true)
-    period_topics = topics_created(months_ago)
+    period_posts_created = posts_created(months_ago, archetype: 'regular')
+    period_responses_created = posts_created(months_ago, archetype: 'regular', exclude_topic: true)
+    period_topics_created = topics_created(months_ago)
+    period_message_created = topics_created(months_ago, archetype: 'private_message')
 
     # actions
     period_posts_read = posts_read(months_ago)
-    period_flags = flagged_posts(months_ago)
-    period_likes = user_actions(months_ago, action_type: 1)
+    period_posts_flagged = flagged_posts(months_ago)
+    period_posts_liked = user_actions(months_ago, action_type: 1)
+    period_topics_solved = user_actions(months_ago, action_type: 15)
+
+    header_metadata = [
+      {key: 'statistics_digest.active_users', value: period_active_users[:current]},
+      {key: 'statistics_digest.posts_created', value: period_posts_created[:current]},
+      {key: 'statistics_digest.posts_read', value: period_posts_read[:current]}
+    ]
+
+    health_data = {
+      title_key: 'statistics_digest.community_health_title',
+      fields: [
+        {key: 'statistics_digest.daily_active_users', value: period_dau[:current], description_index: 1},
+        {key: 'statistics_digest.monthly_active_users', value: period_active_users[:current]},
+        {key: 'statistics_digest.dau_mau', value: period_health[:current],
+         description_index: 2}
+      ],
+      descriptions: [
+        {key: 'statistics_digest.dau_description'},
+        {key: 'statistics_digest.dau_mau_description'}
+      ]
+    }
+
+    user_data = {
+      title_key: 'statistics_digest.users_section_title',
+      fields: [
+        {key: 'statistics_digest.new_users', value: period_new_users[:current]},
+        {key: 'statistics_digest.repeat_new_users', value: period_repeat_new_users[:current]},
+        {key: 'statistics_digest.user_visits', value: period_user_visits[:current]},
+        # {key: 'statistics_digest.inactive_users', value: inactive_users_for_period}
+      ]
+    }
+
+    user_action_data = {
+      title_key: 'statistics_digest.user_actions_title',
+      fields: [
+        {key: 'statistics_digest.posts_read', value: period_posts_read[:current]},
+        {key: 'statistics_digest.posts_liked', value: period_posts_liked[:current]},
+        {key: 'statistics_digest.topics_solved', value: period_topics_solved[:current]},
+        {key: 'statistics_digest.flagged_posts', value: period_posts_flagged[:current]}
+      ]
+    }
+
+    content_data = {
+      title_key: 'statistics_digest.content_title',
+      fields: [
+        {key: 'statistics_digest.topics_created', value: period_topics_created[:current]},
+        {key: 'statistics_digest.topic_replies_created', value: period_responses_created[:current]},
+        {key: 'statistics_digest.messages_created', value: period_message_created[:current]},
+      ]
+    }
+
+    data_array = [
+      health_data,
+      user_data,
+      content_data,
+      user_action_data
+    ]
+
+    subject = digest_title(months_ago[0])
+
+    @data = {
+      header_metadata: header_metadata,
+      data_array: data_array,
+      title: subject,
+      subject: subject
+    }
+
+    admin_emails = User.where(admin: true).map(&:email).select {|e| e.include?('@')}
+
+    mail(to: admin_emails, subject: subject)
   end
 
   # helper methods
@@ -271,6 +342,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     current = value_for_key(arr, 0, key)
     previous = value_for_key(arr, 1, key)
     compare = percent_diff(current, previous)
+
+    current = current.round(2) if current.is_a? Float
 
     {
       current: current,
