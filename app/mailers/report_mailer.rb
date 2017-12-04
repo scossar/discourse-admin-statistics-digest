@@ -26,7 +26,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     period_repeat_new_users = new_users(months_ago, repeats: 2)
 
     # content
-    period_posts_created = posts_created(months_ago, archetype: 'regular')
+    period_posts = posts_created(months_ago, archetype: 'regular')
+    period_responses = posts_created(months_ago, archetype: 'regular', exclude_topic: true)
 
     # actions
     period_flags = flagged_posts(months_ago)

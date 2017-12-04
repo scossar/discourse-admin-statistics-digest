@@ -31,10 +31,10 @@ RIGHT JOIN periods pd
 ON p.created_at >= pd.period_start
 AND p.created_at <= pd.period_end
 AND p.user_id > 0
+#{exclude_topic_filter}
 LEFT JOIN topics t
 ON t.id = p.topic_id
 AND t.archetype = '#{filters.archetype}'
-#{exclude_topic_filter}
 GROUP BY pd.months_ago
 ORDER BY pd.months_ago
     SQL
