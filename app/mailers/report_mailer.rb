@@ -39,18 +39,17 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     period_topics_solved = user_actions(months_ago, action_type: 15)
 
     header_metadata = [
-      {key: 'statistics_digest.active_users', value: period_active_users[:current]},
-      {key: 'statistics_digest.posts_created', value: period_posts_created[:current]},
-      {key: 'statistics_digest.posts_read', value: period_posts_read[:current]}
+      {key: 'statistics_digest.active_users', value: period_active_users[:current], display: period_active_users[:display]},
+      {key: 'statistics_digest.posts_created', value: period_posts_created[:current], display: period_posts_created[:display]},
+      {key: 'statistics_digest.posts_read', value: period_posts_read[:current], display: period_posts_read[:display]}
     ]
 
     health_data = {
       title_key: 'statistics_digest.community_health_title',
       fields: [
-        {key: 'statistics_digest.daily_active_users', value: period_dau[:current], description_index: 1},
-        {key: 'statistics_digest.monthly_active_users', value: period_active_users[:current]},
-        {key: 'statistics_digest.dau_mau', value: period_health[:current],
-         description_index: 2}
+        {key: 'statistics_digest.daily_active_users', value: period_dau[:current], compare: period_dau[:compare], display: period_dau[:display], description_index: 1},
+        {key: 'statistics_digest.monthly_active_users', value: period_active_users[:current], compare: period_active_users[:compare], display: period_active_users[:display]},
+        {key: 'statistics_digest.dau_mau', value: period_health[:current], compare: period_health[:compare], display: period_health[:display], description_index: 2}
       ],
       descriptions: [
         {key: 'statistics_digest.dau_description'},
@@ -61,6 +60,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     user_data = {
       title_key: 'statistics_digest.users_section_title',
       fields: [
+        {key: 'statistics_digest.all_users', value: period_all_users[:current], compare: period_all_users[:compare], display: period_all_users[:display]},
         {key: 'statistics_digest.new_users', value: period_new_users[:current]},
         {key: 'statistics_digest.repeat_new_users', value: period_repeat_new_users[:current]},
         {key: 'statistics_digest.user_visits', value: period_user_visits[:current]},
@@ -349,7 +349,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       current: current,
       previous: previous,
       compare: compare,
-      formatted_compare: format_diff(compare),
       display: compare > display_threshold
     }
   end

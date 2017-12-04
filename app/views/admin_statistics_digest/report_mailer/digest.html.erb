@@ -125,7 +125,10 @@
                                                             <%= raw superscript field[:description_index] -%>
                                                         <% end -%>
                                                     </td>
-                                                    <td style="padding: 15px 0 15px 0;background-color:<%= body_bgcolor -%>; color:<%= body_color -%>;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;<%= table_border_style obj[:fields].count, inner_count -%>" width="20%">
+                                                    <td style="padding: 15px 0 15px 0;background-color:<%= body_bgcolor -%>; color:<%= body_color -%>;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;<%= table_border_style obj[:fields].count, inner_count -%>" width="16%">
+                                                        <%= field[:value] -%>
+                                                    </td>
+                                                    <td style="padding: 15px 0 15px 0;background-color:<%= body_bgcolor -%>; color:<%= body_color -%>;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;<%= table_border_style obj[:fields].count, inner_count -%>" width="16%">
                                                         <%= field[:value] -%>
                                                     </td>
                                                 </tr>
