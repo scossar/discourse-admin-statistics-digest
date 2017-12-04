@@ -14,9 +14,10 @@ FROM unnest(ARRAY #{filters.months_ago}) as "months_ago"
 )
 
 SELECT
-count("u"."id")
+p.months_ago,
+count("u"."id") AS all_users
 FROM "users" "u"
-JOIN "periods" "p"
+RIGHT JOIN "periods" "p"
 ON "u"."created_at" <= "p"."period_end"
 GROUP BY "p"."months_ago"
 ORDER BY "p"."months_ago"
