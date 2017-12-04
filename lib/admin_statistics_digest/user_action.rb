@@ -17,7 +17,7 @@ FROM unnest(ARRAY #{filters.months_ago}) as months_ago
 
 SELECT
 p.months_ago,
-count(ua.id) as actions
+COALESCE(count(ua.id), 0) as actions
 FROM user_actions ua
 RIGHT JOIN periods p
 ON ua.created_at >= p.period_start

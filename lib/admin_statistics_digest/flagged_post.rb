@@ -15,7 +15,7 @@ FROM unnest(ARRAY #{filters.months_ago}) AS months_ago
 
 SELECT
 p.months_ago,
-count(pat.id) AS flag_count
+count(pat.id) AS flagged_posts
 FROM post_actions pa
 JOIN post_action_types pat
 ON pat.id = pa.post_action_type_id

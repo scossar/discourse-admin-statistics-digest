@@ -38,7 +38,7 @@ ORDER BY p.months_ago, visits DESC
 
 SELECT
 pnu.months_ago,
-count(puv.user_id) AS user_count
+count(puv.user_id) AS new_users
 FROM period_new_users pnu
 LEFT JOIN period_user_visits puv
 ON puv.months_ago = pnu.months_ago

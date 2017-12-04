@@ -25,7 +25,7 @@ FROM unnest(ARRAY #{filters.months_ago}) AS months_ago
 
 SELECT
 pd.months_ago,
-count(p.id) AS posts_count
+count(p.id) AS posts_created
 FROM posts p
 RIGHT JOIN periods pd
 ON p.created_at >= pd.period_start

@@ -27,7 +27,7 @@ GROUP BY p.months_ago, p.days_in_period
 
 SELECT
 dv.months_ago,
-sum(dv.visits) / dv.days_in_period AS average_visits
+sum(dv.visits) / dv.days_in_period AS daily_active_users
 FROM daily_visits dv
 GROUP BY dv.months_ago, dv.days_in_period
 ORDER BY dv.months_ago
