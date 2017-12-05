@@ -28,15 +28,15 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
     # content
     period_posts_created = posts_created(months_ago, archetype: 'regular')
-    period_responses_created = posts_created(months_ago, archetype: 'regular', exclude_topic: true)
+    period_responses_created = posts_created(months_ago, archetype: 'regular', translation_key: 'replies_created', exclude_topic: true)
     period_topics_created = topics_created(months_ago)
     period_message_created = topics_created(months_ago, archetype: 'private_message')
 
     # actions
     period_posts_read = posts_read(months_ago)
     period_posts_flagged = flagged_posts(months_ago)
-    period_posts_liked = user_actions(months_ago, action_type: 1)
-    period_topics_solved = user_actions(months_ago, action_type: 15)
+    period_posts_liked = user_actions(months_ago,1, translation_key: 'posts_liked')
+    period_topics_solved = user_actions(months_ago, 15, translation_key: 'topics_solved')
 
     header_metadata = [
       # {key: 'statistics_digest.active_users', value: period_active_users[:current], display: period_active_users[:display]},
@@ -214,45 +214,45 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   # users
 
-  def all_users(months_ago)
+  def all_users(months_ago, translation_key: nil)
     all_users = report.all_users do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(all_users, 'all_users')
+    compare_with_previous(all_users, 'all_users', translation_key: translation_key)
   end
 
-  def new_users(months_ago, repeats: 1)
+  def new_users(months_ago, repeats: 1, translation_key: nil)
     new_users = report.new_users do |r|
       r.months_ago months_ago
       r.repeats repeats
     end
 
-    compare_with_previous( new_users, 'new_users')
+    compare_with_previous( new_users, 'new_users', translation_key: translation_key)
   end
 
-  def active_users(months_ago)
+  def active_users(months_ago, translation_key: nil)
     active_users = report.active_users do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(active_users, 'active_users')
+    compare_with_previous(active_users, 'active_users', translation_key: translation_key)
   end
 
-  def user_visits(months_ago)
+  def user_visits(months_ago, translation_key: nil)
     user_visits = report.user_visits do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(user_visits, 'user_visits')
+    compare_with_previous(user_visits, 'user_visits', translation_key: translation_key)
   end
 
-  def daily_active_users(months_ago)
+  def daily_active_users(months_ago, translation_key: nil)
     daily_active_users = report.daily_active_users do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(daily_active_users, 'daily_active_users')
+    compare_with_previous(daily_active_users, 'daily_active_users', translation_key: translation_key)
   end
 
   # todo: this is making a couple of extra queries. It could use the existing dau/mau data hash
@@ -289,50 +289,50 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   # content
 
-  def posts_created(months_ago, archetype: 'regular', exclude_topic: nil)
+  def posts_created(months_ago, archetype: 'regular', translation_key: nil, exclude_topic: nil)
     posts_created = report.posts_created do |r|
       r.months_ago months_ago
       r.archetype archetype
       r.exclude_topic exclude_topic if exclude_topic
     end
 
-    compare_with_previous(posts_created, 'posts_created')
+    compare_with_previous(posts_created, 'posts_created', translation_key: translation_key)
   end
 
-  def topics_created(months_ago, archetype: 'regular')
+  def topics_created(months_ago, archetype: 'regular', translation_key: nil)
     topics_created = report.topics_created do |r|
       r.months_ago months_ago
       r.archetype archetype
     end
 
-    compare_with_previous(topics_created, 'topics_created')
+    compare_with_previous(topics_created, 'topics_created', translation_key: translation_key)
   end
 
   # actions
 
-  def posts_read(months_ago)
+  def posts_read(months_ago, translation_key: nil)
     posts_read = report.posts_read do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(posts_read, 'posts_read')
+    compare_with_previous(posts_read, 'posts_read', translation_key: translation_key)
   end
 
-  def flagged_posts(months_ago)
+  def flagged_posts(months_ago, translation_key: nil)
     flagged_posts = report.flagged_posts do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(flagged_posts, 'flagged_posts')
+    compare_with_previous(flagged_posts, 'flagged_posts', translation_key: translation_key)
   end
 
-  def user_actions(months_ago, action_type:)
+  def user_actions(months_ago, action_type, translation_key)
     user_actions = report.user_actions do |r|
       r.months_ago months_ago
       r.action_type action_type
     end
 
-    compare_with_previous(user_actions, 'actions')
+    compare_with_previous(user_actions, 'actions', translation_key: translation_key)
   end
 
   def percent_diff(current, previous)

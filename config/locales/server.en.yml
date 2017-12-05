@@ -9,7 +9,7 @@ en:
 
     inactive_users: "Inactive Users"
     posts_created: "Posts"
-    topic_replies_created: "Responses"
+    replies_created: "Responses"
     topics_created: "Topics"
     messages_created: "Messages"
     posts_read: "Posts Read"
