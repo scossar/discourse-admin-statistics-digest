@@ -39,17 +39,24 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     period_topics_solved = user_actions(months_ago, action_type: 15)
 
     header_metadata = [
-      {key: 'statistics_digest.active_users', value: period_active_users[:current], display: period_active_users[:display]},
-      {key: 'statistics_digest.posts_created', value: period_posts_created[:current], display: period_posts_created[:display]},
-      {key: 'statistics_digest.posts_read', value: period_posts_read[:current], display: period_posts_read[:display]}
+      # {key: 'statistics_digest.active_users', value: period_active_users[:current], display: period_active_users[:display]},
+      # {key: 'statistics_digest.posts_created', value: period_posts_created[:current], display: period_posts_created[:display]},
+      # {key: 'statistics_digest.posts_read', value: period_posts_read[:current], display: period_posts_read[:display]}
+      period_active_users,
+      period_posts_created,
+      period_posts_read
     ]
 
     health_data = {
       title_key: 'statistics_digest.community_health_title',
       fields: [
-        {key: 'statistics_digest.daily_active_users', value: period_dau[:current], compare: period_dau[:compare], display: period_dau[:display], description_index: 1},
-        {key: 'statistics_digest.monthly_active_users', value: period_active_users[:current], compare: period_active_users[:compare], display: period_active_users[:display]},
-        {key: 'statistics_digest.dau_mau', value: period_health[:current], compare: period_health[:compare], display: period_health[:display], description_index: 2}
+        # {key: 'statistics_digest.daily_active_users', value: period_dau[:current], compare: period_dau[:compare], display: period_dau[:display], description_index: 1},
+        # {key: 'statistics_digest.monthly_active_users', value: period_active_users[:current], compare: period_active_users[:compare], display: period_active_users[:display]},
+        # {key: 'statistics_digest.dau_mau', value: period_health[:current], compare: period_health[:compare], display: period_health[:display], description_index: 2}
+        period_dau,
+        period_active_users,
+        period_health,
+
       ],
       descriptions: [
         {key: 'statistics_digest.dau_description'},
@@ -60,30 +67,41 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     user_data = {
       title_key: 'statistics_digest.users_section_title',
       fields: [
-        {key: 'statistics_digest.all_users', value: period_all_users[:current], compare: period_all_users[:compare], display: period_all_users[:display]},
-        {key: 'statistics_digest.new_users', value: period_new_users[:current]},
-        {key: 'statistics_digest.repeat_new_users', value: period_repeat_new_users[:current]},
-        {key: 'statistics_digest.user_visits', value: period_user_visits[:current]},
+        # {key: 'statistics_digest.all_users', value: period_all_users[:current], compare: period_all_users[:compare], display: period_all_users[:display]},
+        # {key: 'statistics_digest.new_users', value: period_new_users[:current]},
+        # {key: 'statistics_digest.repeat_new_users', value: period_repeat_new_users[:current]},
+        # {key: 'statistics_digest.user_visits', value: period_user_visits[:current]},
         # {key: 'statistics_digest.inactive_users', value: inactive_users_for_period}
+        period_all_users,
+        period_new_users,
+        period_repeat_new_users,
+        period_user_visits
       ]
     }
 
     user_action_data = {
       title_key: 'statistics_digest.user_actions_title',
       fields: [
-        {key: 'statistics_digest.posts_read', value: period_posts_read[:current]},
-        {key: 'statistics_digest.posts_liked', value: period_posts_liked[:current]},
-        {key: 'statistics_digest.topics_solved', value: period_topics_solved[:current]},
-        {key: 'statistics_digest.flagged_posts', value: period_posts_flagged[:current]}
+        # {key: 'statistics_digest.posts_read', value: period_posts_read[:current]},
+        # {key: 'statistics_digest.posts_liked', value: period_posts_liked[:current]},
+        # {key: 'statistics_digest.topics_solved', value: period_topics_solved[:current]},
+        # {key: 'statistics_digest.flagged_posts', value: period_posts_flagged[:current]}
+        period_posts_read,
+        period_posts_liked,
+        period_topics_solved,
+        period_posts_flagged
       ]
     }
 
     content_data = {
       title_key: 'statistics_digest.content_title',
       fields: [
-        {key: 'statistics_digest.topics_created', value: period_topics_created[:current]},
-        {key: 'statistics_digest.topic_replies_created', value: period_responses_created[:current]},
-        {key: 'statistics_digest.messages_created', value: period_message_created[:current]},
+        # {key: 'statistics_digest.topics_created', value: period_topics_created[:current]},
+        # {key: 'statistics_digest.topic_replies_created', value: period_responses_created[:current]},
+        # {key: 'statistics_digest.messages_created', value: period_message_created[:current]},
+        period_topics_created,
+        period_responses_created,
+        period_message_created
       ]
     }
 
@@ -259,11 +277,12 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     # todo: is there a standard way of comparing percentages?
     compare = current_health - prev_health
 
+    #todo: check the value that's being used for compare!
     {
-      current: format_percent(current_health),
-      previous: format_percent(prev_health),
-      compare: compare,
-      formatted_compare: format_percent(compare.round(2)),
+      key: 'statistics_digest.dau_mau',
+      value: format_percent(current_health),
+      compare: format_percent(compare.round(2)),
+      has_description: true,
       display: compare > display_threshold
     }
   end
@@ -338,17 +357,24 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     "#{num}%"
   end
 
-  def compare_with_previous(arr, key, display_threshold = -20)
-    current = value_for_key(arr, 0, key)
-    previous = value_for_key(arr, 1, key)
+  def compare_with_previous(arr, field_key, translation_key: nil, has_description: false, display_threshold: -20)
+    current = value_for_key(arr, 0, field_key)
+    previous = value_for_key(arr, 1, field_key)
     compare = percent_diff(current, previous)
+    formatted_compare = format_diff(compare)
 
     current = current.round(2) if current.is_a? Float
+    if translation_key
+      text_key = "statistics_digest.#{translation_key}"
+    else
+      text_key = "statistics_digest.#{field_key}"
+    end
 
     {
-      current: current,
-      previous: previous,
-      compare: compare,
+      key: text_key,
+      value: current,
+      compare: formatted_compare,
+      has_description: has_description,
       display: compare > display_threshold
     }
   end

@@ -6,7 +6,7 @@ en:
     here: "here"
     visit_link: "Visit this link"
     title: "Key Statistics for"
-    active_users: "Active Users"
+
     inactive_users: "Inactive Users"
     posts_created: "Posts"
     topic_replies_created: "Responses"
@@ -14,14 +14,13 @@ en:
     messages_created: "Messages"
     posts_read: "Posts Read"
     community_health_title: "Community Health"
-    daily_active_users: "Daily Active Users"
+
     monthly_active_users: "Monthly Active Users"
-    dau_mau: "DAU/MAU"
+
     dau_description: "Average number of unique user visits per day."
     dau_mau_description: "Daily active users over monthly active users is a measure of how sticky your community is. Aim for 30% or above."
     users_section_title: "Users"
-    new_users: "New Users"
-    user_visits: "User Visits"
+
     repeat_new_users: "Repeat New Users"
     content_title: "Content Created"
     user_actions_title: "User Actions"
@@ -29,3 +28,8 @@ en:
     topics_solved: "Solved Topics"
     flagged_posts: "Flagged Posts"
     all_users: "Total Users"
+    new_users: "New Users"
+    active_users: "Active Users"
+    user_visits: "User Visits"
+    daily_active_users: "Daily Active Users"
+    dau_mau: "DAU/MAU"
