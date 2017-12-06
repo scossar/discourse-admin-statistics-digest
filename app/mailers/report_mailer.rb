@@ -23,8 +23,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     period_user_visits = user_visits(months_ago)
     period_dau = daily_active_users(months_ago)
     period_health = health(months_ago)
-    period_new_users = new_users(months_ago)
-    period_repeat_new_users = new_users(months_ago, repeats: 2)
+    period_new_users = new_users(months_ago, translation_key: 'new_users')
+    period_repeat_new_users = new_users(months_ago, repeats: 2, translation_key: 'repeat_new_users')
 
     # content
     period_posts_created = posts_created(months_ago, archetype: 'regular')
@@ -214,12 +214,12 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   # users
 
-  def all_users(months_ago, translation_key: nil)
+  def all_users(months_ago, opts: {})
     all_users = report.all_users do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(all_users, 'all_users', translation_key: translation_key)
+    compare_with_previous(all_users, 'all_users', opts[:display_threshold])
   end
 
   def new_users(months_ago, repeats: 1, translation_key: nil)
@@ -231,28 +231,28 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     compare_with_previous( new_users, 'new_users', translation_key: translation_key)
   end
 
-  def active_users(months_ago, translation_key: nil)
+  def active_users(months_ago)
     active_users = report.active_users do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(active_users, 'active_users', translation_key: translation_key)
+    compare_with_previous(active_users, 'active_users')
   end
 
-  def user_visits(months_ago, translation_key: nil)
+  def user_visits(months_ago)
     user_visits = report.user_visits do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(user_visits, 'user_visits', translation_key: translation_key)
+    compare_with_previous(user_visits, 'user_visits')
   end
 
-  def daily_active_users(months_ago, translation_key: nil)
+  def daily_active_users(months_ago)
     daily_active_users = report.daily_active_users do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(daily_active_users, 'daily_active_users', translation_key: translation_key)
+    compare_with_previous(daily_active_users, 'daily_active_users')
   end
 
   # todo: this is making a couple of extra queries. It could use the existing dau/mau data hash
@@ -310,20 +310,20 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   # actions
 
-  def posts_read(months_ago, translation_key: nil)
+  def posts_read(months_ago)
     posts_read = report.posts_read do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(posts_read, 'posts_read', translation_key: translation_key)
+    compare_with_previous(posts_read, 'posts_read')
   end
 
-  def flagged_posts(months_ago, translation_key: nil)
+  def flagged_posts(months_ago)
     flagged_posts = report.flagged_posts do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(flagged_posts, 'flagged_posts', translation_key: translation_key)
+    compare_with_previous(flagged_posts, 'flagged_posts')
   end
 
   def user_actions(months_ago, action_type, translation_key: nil)
@@ -357,15 +357,17 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     "#{num}%"
   end
 
-  def compare_with_previous(arr, field_key, translation_key: nil, has_description: false, display_threshold: -20)
+  # def compare_with_previous(arr, field_key, translation_key: nil, has_description: false, display_threshold: -20)
+  def compare_with_previous(arr, field_key, opts = {})
+    opts = opts || {}
     current = value_for_key(arr, 0, field_key)
     previous = value_for_key(arr, 1, field_key)
     compare = percent_diff(current, previous)
     formatted_compare = format_diff(compare)
 
     current = current.round(2) if current.is_a? Float
-    if translation_key
-      text_key = "statistics_digest.#{translation_key}"
+    if opts[:translation_key]
+      text_key = "statistics_digest.#{opts[:translation_key]}"
     else
       text_key = "statistics_digest.#{field_key}"
     end
@@ -374,8 +376,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       key: text_key,
       value: current,
       compare: formatted_compare,
-      has_description: has_description,
-      display: compare > display_threshold
+      has_description: opts[:has_description],
+      display: opts[:display_threshold] ? compare > opts[:display_threshold] : true
     }
   end
 
