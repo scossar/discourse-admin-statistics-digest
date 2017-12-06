@@ -127,6 +127,12 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   end
 
   # helper methods
+
+  # Todo: remove this
+  def scratch_log
+    @@scratch_log ||= Logger.new("#{Rails.root}/log/scratch.log")
+  end
+
   def dir_for_locale
     rtl? ? 'rtl' : 'ltr'
   end
@@ -222,6 +228,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     compare_with_previous(all_users, 'all_users', opts[:display_threshold])
   end
 
+  # Todo: repeats should be an opt, translation_key a required parameter
   def new_users(months_ago, repeats: 1, translation_key: nil)
     new_users = report.new_users do |r|
       r.months_ago months_ago
