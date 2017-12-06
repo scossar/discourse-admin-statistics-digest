@@ -41,9 +41,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     period_topics_solved = user_actions(months_ago, 15, translation_key: 'topics_solved')
 
     header_metadata = [
-      # {key: 'statistics_digest.active_users', value: period_active_users[:current], display: period_active_users[:display]},
-      # {key: 'statistics_digest.posts_created', value: period_posts_created[:current], display: period_posts_created[:display]},
-      # {key: 'statistics_digest.posts_read', value: period_posts_read[:current], display: period_posts_read[:display]}
       period_active_users,
       period_posts_created,
       period_posts_read
@@ -52,13 +49,9 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     health_data = {
       title_key: 'statistics_digest.community_health_title',
       fields: [
-        # {key: 'statistics_digest.daily_active_users', value: period_dau[:current], compare: period_dau[:compare], display: period_dau[:display], description_index: 1},
-        # {key: 'statistics_digest.monthly_active_users', value: period_active_users[:current], compare: period_active_users[:compare], display: period_active_users[:display]},
-        # {key: 'statistics_digest.dau_mau', value: period_health[:current], compare: period_health[:compare], display: period_health[:display], description_index: 2}
         period_dau,
         period_active_users,
         period_health,
-
       ],
       descriptions: [
         {key: 'statistics_digest.dau_description'},
@@ -69,11 +62,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     user_data = {
       title_key: 'statistics_digest.users_section_title',
       fields: [
-        # {key: 'statistics_digest.all_users', value: period_all_users[:current], compare: period_all_users[:compare], display: period_all_users[:display]},
-        # {key: 'statistics_digest.new_users', value: period_new_users[:current]},
-        # {key: 'statistics_digest.repeat_new_users', value: period_repeat_new_users[:current]},
-        # {key: 'statistics_digest.user_visits', value: period_user_visits[:current]},
-        # {key: 'statistics_digest.inactive_users', value: inactive_users_for_period}
         period_all_users,
         period_new_users,
         period_repeat_new_users,
@@ -84,10 +72,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     user_action_data = {
       title_key: 'statistics_digest.user_actions_title',
       fields: [
-        # {key: 'statistics_digest.posts_read', value: period_posts_read[:current]},
-        # {key: 'statistics_digest.posts_liked', value: period_posts_liked[:current]},
-        # {key: 'statistics_digest.topics_solved', value: period_topics_solved[:current]},
-        # {key: 'statistics_digest.flagged_posts', value: period_posts_flagged[:current]}
         period_posts_read,
         period_posts_liked,
         period_topics_solved,
@@ -98,9 +82,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     content_data = {
       title_key: 'statistics_digest.content_title',
       fields: [
-        # {key: 'statistics_digest.topics_created', value: period_topics_created[:current]},
-        # {key: 'statistics_digest.topic_replies_created', value: period_responses_created[:current]},
-        # {key: 'statistics_digest.messages_created', value: period_message_created[:current]},
         period_topics_created,
         period_responses_created,
         period_message_created
@@ -127,9 +108,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
     mail(to: admin_emails, subject: subject)
   end
-
-  # helper methods
-
 
   private
 
