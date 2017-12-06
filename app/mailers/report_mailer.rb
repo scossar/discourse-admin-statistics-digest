@@ -326,7 +326,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     compare_with_previous(flagged_posts, 'flagged_posts', translation_key: translation_key)
   end
 
-  def user_actions(months_ago, action_type, translation_key)
+  def user_actions(months_ago, action_type, translation_key: nil)
     user_actions = report.user_actions do |r|
       r.months_ago months_ago
       r.action_type action_type
