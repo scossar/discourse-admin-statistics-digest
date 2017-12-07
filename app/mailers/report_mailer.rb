@@ -19,12 +19,12 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     months_ago = (0...num_months).to_a.map {|i| i + months_ago}
 
     # users
-    period_dau = daily_active_users(months_ago, description_index: 1, description_key: 'dau_description', display_threshold: -20)
+    period_dau = daily_active_users(months_ago, description_key: 'dau_description', display_threshold: -20)
     period_all_users = all_users(months_ago, display_threshold: -20)
-    period_active_users = active_users(months_ago, description_index: 2, description_key: 'active_users_description', display_threshold: -20)
-    period_user_visits = user_visits(months_ago)
+    period_active_users = active_users(months_ago, description_key: 'active_users_description', display_threshold: -20)
+    period_user_visits = user_visits(months_ago, description_key: 'user_visits_description', display_threshold: -20)
 
-    period_health = health(months_ago, description_index: 3, description_key: 'health_description')
+    period_health = health(months_ago, description_key: 'health_description')
     period_new_users = new_users(months_ago, translation_key: 'new_users')
     period_repeat_new_users = new_users(months_ago, repeats: 2, translation_key: 'repeat_new_users')
 
@@ -140,12 +140,12 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     compare_with_previous(active_users, 'active_users', opts)
   end
 
-  def user_visits(months_ago)
+  def user_visits(months_ago, opts = {})
     user_visits = report.user_visits do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(user_visits, 'user_visits')
+    compare_with_previous(user_visits, 'user_visits', opts)
   end
 
   def daily_active_users(months_ago, opts = {})
@@ -153,8 +153,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.months_ago months_ago
     end
 
-    compare_with_previous(daily_active_users,
-                          'daily_active_users', opts)
+    compare_with_previous(daily_active_users,'daily_active_users', opts)
   end
 
   def health(months_ago, opts = {})
@@ -274,7 +273,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       key: text_key,
       value: current,
       compare: formatted_compare,
-      description_index: opts[:description_index],
       description_key: opts[:description_key] ? "statistics_digest.#{opts[:description_key]}" : nil,
       display: opts[:display_threshold] ? compare > opts[:display_threshold] : true
     }
