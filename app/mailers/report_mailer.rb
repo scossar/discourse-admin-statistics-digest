@@ -19,13 +19,13 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     months_ago = (0...num_months).to_a.map {|i| i + months_ago}
 
     # users
-    period_all_users = all_users(months_ago)
-    period_active_users = active_users(months_ago)
+    period_all_users = all_users(months_ago, display_threshold: -20)
+    period_active_users = active_users(months_ago, display_threshold: -20)
     period_user_visits = user_visits(months_ago)
     period_dau = daily_active_users(months_ago, description_index: 1, description_key: 'statistics_digest.dau_description', display_threshold: -20)
     period_health = health(months_ago)
-    period_new_users = new_users(months_ago, translation_key: 'new_users')
-    period_repeat_new_users = new_users(months_ago, repeats: 2, translation_key: 'repeat_new_users')
+    period_new_users = new_users(months_ago, 1, translation_key: 'new_users')
+    period_repeat_new_users = new_users(months_ago, 2, translation_key: 'repeat_new_users')
 
     # content
     period_posts_created = posts_created(months_ago, archetype: 'regular')
@@ -122,21 +122,21 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     compare_with_previous(all_users, 'all_users', opts)
   end
 
-  def new_users(months_ago, repeats: 1, translation_key: nil)
+  def new_users(months_ago, repeats = 1, opts = {})
     new_users = report.new_users do |r|
       r.months_ago months_ago
       r.repeats repeats
     end
 
-    compare_with_previous(new_users, 'new_users', translation_key: translation_key)
+    compare_with_previous(new_users, 'new_users', opts)
   end
 
-  def active_users(months_ago)
+  def active_users(months_ago, opts = {})
     active_users = report.active_users do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(active_users, 'active_users')
+    compare_with_previous(active_users, 'active_users', opts)
   end
 
   def user_visits(months_ago)
