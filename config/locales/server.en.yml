@@ -31,3 +31,5 @@ en:
     health_description: "Daily active users over monthly active users is a measure of how sticky your community is. Aim for 30% or above."
     active_users_description: "Users who have visited during the reporting period."
     user_visits_description: "Total number of visits during the reporting period."
+    new_users_description: "Users who have registered during the reporting period"
+    repeat_new_users_description: "New users who have visited more than once during the reporting period."
