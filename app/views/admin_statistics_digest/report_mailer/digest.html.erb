@@ -143,8 +143,9 @@
             </tr><!-- end of content data rows -->
           <% end %>
 
+          <% @index_count = 1 %>
           <% obj[:fields].each_with_index do |field, i| %>
-            <% if field[:description_index].present? %>
+            <% if field[:description_key].present? %>
               <tr>
                 <td style="background-color:<%= body_bgcolor -%>; color:<%= body_color -%>;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;">
                   <table dir="<%= dir_for_locale %>" border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;border-collapse:collapse;">
@@ -153,9 +154,9 @@
                       <td>
                         <table dir="<%= dir_for_locale %>" border="0" cellpadding="0" cellspacing="0" width="66%" align="center" style="font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;margin:0 auto;border-collapse:collapse;">
                           <tr>
-                            <td style="padding: 15px 0 0 0;background-color:<%= body_bgcolor -%>; color:<%= body_color -%>;font-size:14px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;<% if i == 0 -%>border-top:1px solid #dddddd;
+                            <td style="padding:7px 0 0 0;background-color:<%= body_bgcolor -%>; color:<%= body_color -%>;font-size:12px;font-weight:400;font-family:Helvetica,Arial,sans-serif !important;<% if @index_count.to_i == 1 -%>border-top:1px solid #dddddd;
                               <% end %>" width="100%">
-                              [<%= field[:description_index] -%>] <%= t field[:description_key] -%>
+                              [<%= @index_count -%>] <%= t field[:description_key] -%>
                             </td>
                           </tr>
                         </table>
@@ -165,6 +166,7 @@
                   </table>
                 </td>
               </tr>
+              <% @index_count+= 1 -%>
             <% end %>
           <% end %>
 
