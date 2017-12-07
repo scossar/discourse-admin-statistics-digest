@@ -22,7 +22,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     period_all_users = all_users(months_ago, display_threshold: -20)
     period_active_users = active_users(months_ago, display_threshold: -20)
     period_user_visits = user_visits(months_ago)
-    period_dau = daily_active_users(months_ago, description_index: 1, description_key: 'statistics_digest.dau_description', display_threshold: -20)
+    period_dau = daily_active_users(months_ago, description_index: 1, description_key: 'dau_description', display_threshold: -20)
     period_health = health(months_ago)
     period_new_users = new_users(months_ago, 1, translation_key: 'new_users')
     period_repeat_new_users = new_users(months_ago, 2, translation_key: 'repeat_new_users')
@@ -274,7 +274,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       value: current,
       compare: formatted_compare,
       description_index: opts[:description_index],
-      description_key: opts[:description_key],
+      description_key: opts[:description_key] ? "statistics_digest.#{opts[:description_key]}" : nil,
       display: opts[:display_threshold] ? compare > opts[:display_threshold] : true
     }
   end
