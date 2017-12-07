@@ -19,13 +19,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     months_ago = (0...num_months).to_a.map {|i| i + months_ago}
 
     # users
-    period_all_users = all_users(months_ago, display_threshold: -20)
-    period_active_users = active_users(months_ago, display_threshold: -20)
-    period_user_visits = user_visits(months_ago)
     period_dau = daily_active_users(months_ago, description_index: 1, description_key: 'dau_description', display_threshold: -20)
-    period_health = health(months_ago)
-    period_new_users = new_users(months_ago, 1, translation_key: 'new_users')
-    period_repeat_new_users = new_users(months_ago, 2, translation_key: 'repeat_new_users')
+    period_all_users = all_users(months_ago, display_threshold: -20)
+    period_active_users = active_users(months_ago, description_index: 2, description_key: 'active_users_description', display_threshold: -20)
+    period_user_visits = user_visits(months_ago)
+
+    period_health = health(months_ago, description_index: 3, description_key: 'health_description')
+    period_new_users = new_users(months_ago, translation_key: 'new_users')
+    period_repeat_new_users = new_users(months_ago, repeats: 2, translation_key: 'repeat_new_users')
 
     # content
     period_posts_created = posts_created(months_ago, archetype: 'regular')
@@ -122,10 +123,10 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     compare_with_previous(all_users, 'all_users', opts)
   end
 
-  def new_users(months_ago, repeats = 1, opts = {})
+  def new_users(months_ago, opts = {})
     new_users = report.new_users do |r|
       r.months_ago months_ago
-      r.repeats repeats
+      r.repeats opts[:repeats] ? opts[:repeats] : 1
     end
 
     compare_with_previous(new_users, 'new_users', opts)
@@ -156,7 +157,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
                           'daily_active_users', opts)
   end
 
-  def health(months_ago, display_threshold: -20)
+  def health(months_ago, opts = {})
     daily_active_users = report.daily_active_users do |r|
       r.months_ago months_ago
     end
@@ -175,13 +176,13 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     # todo: is there a standard way of comparing percentages?
     compare = current_health - prev_health
 
-    #todo: check the value that's being used for compare!
     {
       key: 'statistics_digest.dau_mau',
       value: format_percent(current_health),
       compare: format_percent(compare.round(2)),
-      has_description: true,
-      display: compare > display_threshold
+      description_index: opts[:description_index],
+      description_key: opts[:description_key] ? "statistics_digest.#{opts[:description_key]}" : nil,
+      display: opts[:display_threshold] ? compare > opts[:display_threshold] : true
     }
   end
 
