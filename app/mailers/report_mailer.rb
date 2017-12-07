@@ -22,7 +22,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     period_all_users = all_users(months_ago)
     period_active_users = active_users(months_ago)
     period_user_visits = user_visits(months_ago)
-    period_dau = daily_active_users(months_ago, has_description: true, display_threshold: -20)
+    period_dau = daily_active_users(months_ago, description_index: 1, description_key: 'statistics_digest.dau_description', display_threshold: -20)
     period_health = health(months_ago)
     period_new_users = new_users(months_ago, translation_key: 'new_users')
     period_repeat_new_users = new_users(months_ago, repeats: 2, translation_key: 'repeat_new_users')
@@ -114,16 +114,14 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   # users
 
-  def all_users(months_ago, opts: nil)
-    opts = opts || {}
+  def all_users(months_ago, opts = {})
     all_users = report.all_users do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(all_users, 'all_users', opts[:display_threshold])
+    compare_with_previous(all_users, 'all_users', opts)
   end
 
-  # Todo: repeats should be an opt, translation_key a required parameter
   def new_users(months_ago, repeats: 1, translation_key: nil)
     new_users = report.new_users do |r|
       r.months_ago months_ago
@@ -155,9 +153,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     end
 
     compare_with_previous(daily_active_users,
-                          'daily_active_users',
-                          has_description: opts[:has_description],
-                          display_threshold: opts[:display_threshold])
+                          'daily_active_users', opts)
   end
 
   def health(months_ago, display_threshold: -20)
@@ -260,7 +256,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   end
 
   def compare_with_previous(arr, field_key, opts = {})
-    opts = opts || {}
+    # opts = opts || {}
     current = value_for_key(arr, 0, field_key)
     previous = value_for_key(arr, 1, field_key)
     compare = percent_diff(current, previous)
@@ -277,6 +273,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       key: text_key,
       value: current,
       compare: formatted_compare,
+      description_index: opts[:description_index],
       description_key: opts[:description_key],
       display: opts[:display_threshold] ? compare > opts[:display_threshold] : true
     }
