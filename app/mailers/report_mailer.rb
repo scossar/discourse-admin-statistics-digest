@@ -23,10 +23,9 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     period_all_users = all_users(months_ago, display_threshold: -20)
     period_active_users = active_users(months_ago, description_key: 'active_users_description', display_threshold: -20)
     period_user_visits = user_visits(months_ago, description_key: 'user_visits_description', display_threshold: -20)
-
-    period_health = health(months_ago, description_key: 'health_description')
-    period_new_users = new_users(months_ago, translation_key: 'new_users')
-    period_repeat_new_users = new_users(months_ago, repeats: 2, translation_key: 'repeat_new_users')
+    period_health = health(months_ago, description_key: 'health_description', display_threshold: -20)
+    period_new_users = new_users(months_ago, translation_key: 'new_users', description_key: 'new_users_description', display_threshold: -20)
+    period_repeat_new_users = new_users(months_ago, repeats: 2, translation_key: 'repeat_new_users', description_key: 'repeat_new_users_description', display_threshold: -20)
 
     # content
     period_posts_created = posts_created(months_ago, archetype: 'regular')
