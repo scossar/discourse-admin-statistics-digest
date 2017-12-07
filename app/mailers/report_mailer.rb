@@ -16,13 +16,13 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   default from: SiteSetting.notification_email
 
   def digest(months_ago, num_months: 2)
-    months_ago = (0...num_months).to_a.map{|i| i + months_ago}
+    months_ago = (0...num_months).to_a.map {|i| i + months_ago}
 
     # users
     period_all_users = all_users(months_ago)
     period_active_users = active_users(months_ago)
     period_user_visits = user_visits(months_ago)
-    period_dau = daily_active_users(months_ago)
+    period_dau = daily_active_users(months_ago, has_description: true, display_threshold: -20)
     period_health = health(months_ago)
     period_new_users = new_users(months_ago, translation_key: 'new_users')
     period_repeat_new_users = new_users(months_ago, repeats: 2, translation_key: 'repeat_new_users')
@@ -36,7 +36,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     # actions
     period_posts_read = posts_read(months_ago)
     period_posts_flagged = flagged_posts(months_ago)
-    period_posts_liked = user_actions(months_ago,1, translation_key: 'posts_liked')
+    period_posts_liked = user_actions(months_ago, 1, translation_key: 'posts_liked')
     period_topics_solved = user_actions(months_ago, 15, translation_key: 'topics_solved')
 
     header_metadata = [
@@ -45,6 +45,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       period_posts_read
     ]
 
+    # Separating the descriptions is awkward, but simplifies the mailer view.
+    # Descriptions need to be ordered to correspond with their respective field.
     health_data = {
       title_key: 'statistics_digest.community_health_title',
       fields: [
@@ -112,7 +114,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   # users
 
-  def all_users(months_ago, opts: {})
+  def all_users(months_ago, opts: nil)
+    opts = opts || {}
     all_users = report.all_users do |r|
       r.months_ago months_ago
     end
@@ -127,7 +130,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.repeats repeats
     end
 
-    compare_with_previous( new_users, 'new_users', translation_key: translation_key)
+    compare_with_previous(new_users, 'new_users', translation_key: translation_key)
   end
 
   def active_users(months_ago)
@@ -146,17 +149,17 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     compare_with_previous(user_visits, 'user_visits')
   end
 
-  def daily_active_users(months_ago)
+  def daily_active_users(months_ago, opts = {})
     daily_active_users = report.daily_active_users do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(daily_active_users, 'daily_active_users')
+    compare_with_previous(daily_active_users,
+                          'daily_active_users',
+                          has_description: opts[:has_description],
+                          display_threshold: opts[:display_threshold])
   end
 
-  # todo: this is making a couple of extra queries. It could use the existing dau/mau data hash
-  # but thet will limit the ability to get comparisons for more months if we choose to do that
-  # in the future.
   def health(months_ago, display_threshold: -20)
     daily_active_users = report.daily_active_users do |r|
       r.months_ago months_ago
@@ -256,7 +259,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     "#{num}%"
   end
 
-  # def compare_with_previous(arr, field_key, translation_key: nil, has_description: false, display_threshold: -20)
   def compare_with_previous(arr, field_key, opts = {})
     opts = opts || {}
     current = value_for_key(arr, 0, field_key)
@@ -275,7 +277,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       key: text_key,
       value: current,
       compare: formatted_compare,
-      has_description: opts[:has_description],
+      description_key: opts[:description_key],
       display: opts[:display_threshold] ? compare > opts[:display_threshold] : true
     }
   end
