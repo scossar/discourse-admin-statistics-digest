@@ -83,7 +83,7 @@ module ReportHelper
   end
 
   def superscript(count)
-    "<sup style='line-height:0;font-size:70%;vertical-align:top;mso-text-raise:60%'>[#{count}]</sup>"
+    "<sup style='line-height:0;font-size:70%;vertical-align:top;mso-text-raise:50%'>[#{count}]</sup>"
   end
 
 end
