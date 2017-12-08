@@ -20,7 +20,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
     # users
     period_dau = daily_active_users(months_ago, description_key: 'dau_description', display_threshold: -20)
-    period_all_users = all_users(months_ago, display_threshold: -20)
+    period_all_users = all_users(months_ago, description_key: 'all_users_description', display_threshold: -20)
     period_active_users = active_users(months_ago, description_key: 'active_users_description', display_threshold: -20)
     period_user_visits = user_visits(months_ago, description_key: 'user_visits_description', display_threshold: -20)
     period_health = health(months_ago, description_key: 'health_description', display_threshold: -20)
@@ -29,9 +29,9 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
     # content
     period_posts_created = posts_created(months_ago, archetype: 'regular')
-    period_responses_created = posts_created(months_ago, archetype: 'regular', translation_key: 'replies_created', exclude_topic: true)
-    period_topics_created = topics_created(months_ago)
-    period_message_created = topics_created(months_ago, archetype: 'private_message')
+    period_responses_created = posts_created(months_ago, translation_key: 'replies_created', description_key: 'responses_description', exclude_topic: true, display_threshold: -20)
+    period_topics_created = topics_created(months_ago, description_key: 'topics_description', display_threshold: -20)
+    period_message_created = topics_created(months_ago, archetype: 'private_message', description_key: 'messages_description')
 
     # actions
     period_posts_read = posts_read(months_ago)
@@ -186,23 +186,23 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   # content
 
-  def posts_created(months_ago, archetype: 'regular', translation_key: nil, exclude_topic: nil)
+  def posts_created(months_ago, opts = {})
     posts_created = report.posts_created do |r|
       r.months_ago months_ago
-      r.archetype archetype
-      r.exclude_topic exclude_topic if exclude_topic
+      r.archetype opts[:archetype] ? opts[:archetype] : 'regular'
+      r.exclude_topic opts[:exclude_topic]
     end
 
-    compare_with_previous(posts_created, 'posts_created', translation_key: translation_key)
+    compare_with_previous(posts_created, 'posts_created', opts)
   end
 
-  def topics_created(months_ago, archetype: 'regular', translation_key: nil)
+  def topics_created(months_ago, opts = {})
     topics_created = report.topics_created do |r|
       r.months_ago months_ago
-      r.archetype archetype
+      r.archetype opts[:archetype] ? opts[:archetype] : 'regular'
     end
 
-    compare_with_previous(topics_created, 'topics_created', translation_key: translation_key)
+    compare_with_previous(topics_created, 'topics_created', opts)
   end
 
   # actions
