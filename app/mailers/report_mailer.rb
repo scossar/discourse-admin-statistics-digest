@@ -31,13 +31,13 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     period_posts_created = posts_created(months_ago, archetype: 'regular')
     period_responses_created = posts_created(months_ago, translation_key: 'replies_created', description_key: 'responses_description', exclude_topic: true, display_threshold: -20)
     period_topics_created = topics_created(months_ago, description_key: 'topics_description', display_threshold: -20)
-    period_message_created = topics_created(months_ago, archetype: 'private_message', description_key: 'messages_description')
+    period_message_created = topics_created(months_ago, archetype: 'private_message', translation_key: 'messages_created', description_key: 'messages_description', display_threshold: nil)
 
     # actions
-    period_posts_read = posts_read(months_ago)
-    period_posts_flagged = flagged_posts(months_ago)
-    period_posts_liked = user_actions(months_ago, 1, translation_key: 'posts_liked')
-    period_topics_solved = user_actions(months_ago, 15, translation_key: 'topics_solved')
+    period_posts_read = posts_read(months_ago, description_key: 'posts_read_description', display_threshold: -20)
+    period_posts_flagged = flagged_posts(months_ago, description_key: 'flagged_posts_description', display_threshold: nil)
+    period_posts_liked = user_actions(months_ago, 1, translation_key: 'posts_liked', description_key: 'posts_liked_description', display_threshold: -20)
+    period_topics_solved = user_actions(months_ago, 15, translation_key: 'topics_solved', description_key: 'topics_solved_description', display_threshold: -20)
 
     header_metadata = [
       period_active_users,
@@ -207,29 +207,29 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   # actions
 
-  def posts_read(months_ago)
+  def posts_read(months_ago, opts = {})
     posts_read = report.posts_read do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(posts_read, 'posts_read')
+    compare_with_previous(posts_read, 'posts_read', opts)
   end
 
-  def flagged_posts(months_ago)
+  def flagged_posts(months_ago, opts = {})
     flagged_posts = report.flagged_posts do |r|
       r.months_ago months_ago
     end
 
-    compare_with_previous(flagged_posts, 'flagged_posts')
+    compare_with_previous(flagged_posts, 'flagged_posts', opts)
   end
 
-  def user_actions(months_ago, action_type, translation_key: nil)
+  def user_actions(months_ago, action_type, opts = {})
     user_actions = report.user_actions do |r|
       r.months_ago months_ago
       r.action_type action_type
     end
 
-    compare_with_previous(user_actions, 'actions', translation_key: translation_key)
+    compare_with_previous(user_actions, 'actions', opts)
   end
 
   def percent_diff(current, previous)
