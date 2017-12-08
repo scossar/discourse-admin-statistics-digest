@@ -45,18 +45,12 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       period_posts_read
     ]
 
-    # Separating the descriptions is awkward, but simplifies the mailer view.
-    # Descriptions need to be ordered to correspond with their respective field.
     health_data = {
       title_key: 'statistics_digest.community_health_title',
       fields: [
         period_dau,
         period_active_users,
         period_health,
-      ],
-      descriptions: [
-        {key: 'statistics_digest.dau_description'},
-        {key: 'statistics_digest.dau_mau_description'}
       ]
     }
 
