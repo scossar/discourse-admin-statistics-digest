@@ -23,14 +23,21 @@ class Filter
     filter[:repeats]
   end
 
+=begin
   def datetime_range(from: nil, to: nil)
     filter[:datetime_range] = { period_start: from, period_end: to } if (from && to)
     filter[:datetime_range]
   end
+=end
 
   def archetype(archetype = nil)
     filter[:archetype] = archetype if archetype
     filter[:archetype]
+  end
+
+  def distinct(distinct = nil)
+    filter[:distinct] = distinct if distinct
+    filter[:distinct]
   end
 
   def exclude_topic(exclude_topic = nil)

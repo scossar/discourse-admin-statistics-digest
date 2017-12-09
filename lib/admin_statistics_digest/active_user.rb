@@ -2,8 +2,16 @@ require_relative '../admin_statistics_digest/base_report'
 
 class AdminStatisticsDigest::ActiveUser < AdminStatisticsDigest::BaseReport
   provide_filter :months_ago
+  provide_filter :distinct
 
   def to_sql
+    distinct_filter = if filters.distinct
+                        <<~SQL
+                        DISTINCT
+                        SQL
+                      else
+                        nil
+                      end
     <<~SQL
 WITH periods AS (
 SELECT
@@ -14,7 +22,7 @@ FROM unnest(ARRAY #{filters.months_ago}) AS months_ago
 ),
 visiting_users AS (
 SELECT
-DISTINCT uv.user_id,
+#{distinct_filter} uv.user_id,
 p.months_ago
 FROM user_visits uv
 RIGHT JOIN periods p

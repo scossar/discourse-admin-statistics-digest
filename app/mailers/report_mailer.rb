@@ -22,8 +22,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     # users
     period_dau = daily_active_users(months_ago, description_key: 'dau_description', display_threshold: -20)
     period_all_users = all_users(months_ago, description_key: 'all_users_description', display_threshold: -20)
-    period_active_users = active_users(months_ago, description_key: 'active_users_description', display_threshold: -20)
-    period_user_visits = user_visits(months_ago, description_key: 'user_visits_description', display_threshold: -20)
+    period_active_users = active_users(months_ago, distinct: true, description_key: 'active_users_description', display_threshold: -20)
+    period_user_visits = active_users(months_ago, distinct: false, translation_key: 'user_visits', description_key: 'user_visits_description', display_threshold: -20)
     period_health = health(months_ago, description_key: 'health_description', display_threshold: -20)
     period_new_users = new_users(months_ago, translation_key: 'new_users', description_key: 'new_users_description', display_threshold: -20)
     period_repeat_new_users = new_users(months_ago, repeats: 2, translation_key: 'repeat_new_users', description_key: 'repeat_new_users_description', display_threshold: -20)
@@ -130,6 +130,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   def active_users(months_ago, opts = {})
     active_users = report.active_users do |r|
       r.months_ago months_ago
+      r.distinct opts[:distinct]
     end
 
     compare_with_previous(active_users, 'active_users', opts)
@@ -234,8 +235,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     compare_with_previous(user_actions, 'actions', opts)
   end
 
-  # If the previous value is 0, showing the percent change is a problem.
-  # see: https://stackoverflow.com/questions/19908431/how-to-calculate-percentage-when-old-value-is-zero
   def percent_diff(current, previous)
     if !(current && previous && previous > 0)
       # no data
