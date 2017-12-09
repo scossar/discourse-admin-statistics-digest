@@ -64,8 +64,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       ]
     }
 
-    scratch_log.info(user_data)
-
     user_action_data = {
       title_key: 'statistics_digest.user_actions_title',
       fields: [
@@ -91,6 +89,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       content_data,
       user_action_data
     ]
+
+    subject = digest_title(months_ago[0])
 
     @data = {
       header_metadata: header_metadata,
