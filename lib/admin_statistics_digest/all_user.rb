@@ -10,12 +10,12 @@ SELECT
 months_ago,
 date_trunc('month', CURRENT_DATE) - INTERVAL '1 months' * months_ago AS period_start,
 date_trunc('month', CURRENT_DATE) - INTERVAL '1 months' * months_ago + INTERVAL '1 month' - INTERVAL '1 second' AS period_end
-FROM unnest(ARRAY #{filters.months_ago}) as months_ago
+FROM unnest(ARRAY #{filters.months_ago}) AS months_ago
 )
 
 SELECT
 p.months_ago,
-count(u.id) AS all_users
+COUNT(u.id) AS all_users
 FROM users u
 RIGHT JOIN periods p
 ON u.created_at <= p.period_end

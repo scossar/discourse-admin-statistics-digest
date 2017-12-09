@@ -9,7 +9,7 @@ class AdminStatisticsDigest::PostCreated < AdminStatisticsDigest::BaseReport
   def to_sql
     exclude_topic_filter = if filters.exclude_topic
                              <<~SQL
-                             AND "p"."post_number" > 1
+                             AND p.post_number > 1
                              SQL
                            else
                              nil

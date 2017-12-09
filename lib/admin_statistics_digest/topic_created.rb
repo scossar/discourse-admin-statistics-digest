@@ -22,8 +22,8 @@ FROM topics t
 RIGHT JOIN periods p
 ON t.created_at >= p.period_start
 AND t.created_at <= p.period_end
-AND "t"."user_id" > 0
-AND "t"."archetype" = '#{filters.archetype}'
+AND t.user_id > 0
+AND t.archetype = '#{filters.archetype}'
 GROUP BY p.months_ago
 ORDER BY p.months_ago
     SQL

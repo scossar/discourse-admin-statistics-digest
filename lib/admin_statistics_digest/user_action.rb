@@ -12,12 +12,12 @@ SELECT
 months_ago,
 date_trunc('month', CURRENT_DATE) - INTERVAL '1 months' * months_ago AS period_start,
 date_trunc('month', CURRENT_DATE) - INTERVAL '1 months' * months_ago + INTERVAL '1 month' - INTERVAL '1 second' AS period_end
-FROM unnest(ARRAY #{filters.months_ago}) as months_ago
+FROM unnest(ARRAY #{filters.months_ago}) AS months_ago
 )
 
 SELECT
 p.months_ago,
-COALESCE(count(ua.id), 0) as actions
+COALESCE(COUNT(ua.id), 0) AS actions
 FROM user_actions ua
 RIGHT JOIN periods p
 ON ua.created_at >= p.period_start

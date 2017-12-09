@@ -17,6 +17,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
   def digest(months_ago, num_months: 2)
     months_ago = (0...num_months).to_a.map {|i| i + months_ago}
+    period_month = (months_ago[0]).months.ago.strftime('%B')
 
     # users
     period_dau = daily_active_users(months_ago, description_key: 'dau_description', display_threshold: -20)
@@ -37,7 +38,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     period_posts_read = posts_read(months_ago, description_key: 'posts_read_description', display_threshold: -20)
     period_posts_flagged = flagged_posts(months_ago, description_key: 'flagged_posts_description', display_threshold: nil)
     period_posts_liked = user_actions(months_ago, 1, translation_key: 'posts_liked', description_key: 'posts_liked_description', display_threshold: -20)
-    period_topics_solved = user_actions(months_ago, 15, translation_key: 'topics_solved', description_key: 'topics_solved_description', display_threshold: -20)
+    period_topics_solved = user_actions(months_ago, 15, translation_key: 'topics_solved', description_key: 'topics_solved_description', display_threshold: -20, hide_zero: true)
 
     header_metadata = [
       period_active_users,
@@ -48,8 +49,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     health_data = {
       title_key: 'statistics_digest.community_health_title',
       fields: [
-        period_dau,
         period_active_users,
+        period_dau,
         period_health,
       ]
     }
@@ -93,6 +94,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     subject = digest_title(months_ago[0])
 
     @data = {
+      period_month: period_month,
       header_metadata: header_metadata,
       data_array: data_array,
       title: subject,
@@ -165,17 +167,23 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
 
     current_health = calculate_health(current_dau, current_mau)
     prev_health = calculate_health(prev_dau, prev_mau)
-    # todo: is there a standard way of comparing percentages?
-    compare = current_health - prev_health
+    compare = percent_diff(current_health, prev_health)
 
     {
       key: 'statistics_digest.dau_mau',
       value: format_percent(current_health),
-      compare: format_percent(compare.round(2)),
-      description_index: opts[:description_index],
+      compare: compare ? format_percent(compare) : I18n.t('statistics_digest.no_data'),
       description_key: opts[:description_key] ? "statistics_digest.#{opts[:description_key]}" : nil,
-      display: opts[:display_threshold] ? compare > opts[:display_threshold] : true
+      hide: opts[:display_threshold] && compare ? compare < opts[:display_threshold] : false
     }
+  end
+
+  def calculate_health(dau, mau)
+    if dau > 0 && mau > 0
+      (dau * 100 / mau).round(2)
+    else
+      0
+    end
   end
 
   # content
@@ -226,13 +234,19 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     compare_with_previous(user_actions, 'actions', opts)
   end
 
+  # If the previous value is 0, showing the percent change is a problem.
+  # see: https://stackoverflow.com/questions/19908431/how-to-calculate-percentage-when-old-value-is-zero
   def percent_diff(current, previous)
-    if current && previous && previous > 0
-      (current - previous) * 100.0 / previous
-    elsif current
-      100.00
+    if !(current && previous && previous > 0)
+      # no data
+      nil
     else
-      0
+      if current == previous
+        0
+      else
+        diff = current - previous
+        diff * 100.0 / previous
+      end
     end
   end
 
@@ -241,15 +255,16 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   end
 
   def format_diff(diff)
-    sprintf("%+d%", diff)
+    return I18n.t 'statistics_digest.no_data' unless diff
+
+    sprintf("%+d%", diff.round(2))
   end
 
   def format_percent(num)
-    "#{num}%"
+    "#{num.round(2)}%"
   end
 
   def compare_with_previous(arr, field_key, opts = {})
-    # opts = opts || {}
     current = value_for_key(arr, 0, field_key)
     previous = value_for_key(arr, 1, field_key)
     compare = percent_diff(current, previous)
@@ -262,21 +277,22 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       text_key = "statistics_digest.#{field_key}"
     end
 
+    # todo: this is for the solved query. It should be checking if the plugin is active.
+    if opts[:hide_zero]
+      hide = current == 0
+    elsif opts[:display_threshold] && compare
+      hide = compare < opts[:display_threshold]
+    else
+      hide = false
+    end
+
     {
       key: text_key,
       value: current,
       compare: formatted_compare,
       description_key: opts[:description_key] ? "statistics_digest.#{opts[:description_key]}" : nil,
-      hide: opts[:display_threshold] ? compare < opts[:display_threshold]  : false
+      hide: hide
     }
-  end
-
-  def calculate_health(dau, mau)
-    if dau > 0 && mau > 0
-      (dau * 100 / mau).round(2)
-    else
-      0
-    end
   end
 
   def report

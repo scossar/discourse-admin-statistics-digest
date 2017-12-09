@@ -11,12 +11,12 @@ SELECT
 months_ago,
 date_trunc('month', CURRENT_DATE) - INTERVAL '1 months' * months_ago AS period_start,
 date_trunc('month', CURRENT_DATE) - INTERVAL '1 months' * months_ago + INTERVAL '1 month' - INTERVAL '1 second' AS period_end
-FROM unnest(ARRAY #{filters.months_ago}) as months_ago
+FROM unnest(ARRAY #{filters.months_ago}) AS months_ago
 )
 
 SELECT
 p.months_ago,
-count(uv.user_id) AS user_visits
+COUNT(uv.user_id) AS user_visits
 FROM user_visits uv
 RIGHT JOIN periods p
 ON uv.visited_at >= p.period_start

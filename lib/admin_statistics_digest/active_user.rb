@@ -10,7 +10,7 @@ SELECT
 months_ago,
 date_trunc('month', CURRENT_DATE) - INTERVAL '1 months' * months_ago AS period_start,
 date_trunc('month', CURRENT_DATE) - INTERVAL '1 months' * months_ago + INTERVAL '1 month' - INTERVAL '1 second' AS period_end
-FROM unnest(ARRAY #{filters.months_ago}) as months_ago
+FROM unnest(ARRAY #{filters.months_ago}) AS months_ago
 ),
 visiting_users AS (
 SELECT
@@ -24,7 +24,7 @@ AND uv.visited_at <= p.period_end
 
 SELECT
 vu.months_ago,
-count(vu.user_id) as active_users
+COUNT(vu.user_id) AS active_users
 FROM visiting_users vu
 GROUP BY vu.months_ago
 ORDER BY vu.months_ago

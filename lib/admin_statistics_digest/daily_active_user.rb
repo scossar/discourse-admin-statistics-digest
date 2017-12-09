@@ -15,7 +15,7 @@ FROM unnest(ARRAY #{filters.months_ago}) AS months_ago
 ),
 daily_visits AS(    
 SELECT
-count(uv.id) AS visits,
+COUNT(uv.id) AS visits,
 p.months_ago,
 p.days_in_period as days_in_period
 FROM user_visits uv
@@ -27,9 +27,8 @@ GROUP BY p.months_ago, p.days_in_period
 
 SELECT
 dv.months_ago,
-sum(dv.visits) / dv.days_in_period AS daily_active_users
+dv.visits / dv.days_in_period AS daily_active_users
 FROM daily_visits dv
-GROUP BY dv.months_ago, dv.days_in_period
 ORDER BY dv.months_ago
 SQL
     end
