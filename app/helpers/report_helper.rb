@@ -1,9 +1,5 @@
 module ReportHelper
-  # Todo: remove this
-  def scratch_log
-    @@scratch_log ||= Logger.new("#{Rails.root}/log/scratch.log")
-  end
-
+  
   def dir_for_locale
     rtl? ? 'rtl' : 'ltr'
   end
