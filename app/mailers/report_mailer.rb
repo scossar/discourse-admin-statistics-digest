@@ -136,16 +136,6 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     compare_with_previous(active_users, 'active_users', opts)
   end
 
-=begin
-  def user_visits(months_ago, opts = {})
-    user_visits = report.user_visits do |r|
-      r.months_ago months_ago
-    end
-
-    compare_with_previous(user_visits, 'user_visits', opts)
-  end
-=end
-
   def daily_active_users(months_ago, opts = {})
     active_users = report.active_users do |r|
       r.months_ago months_ago

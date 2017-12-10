@@ -4,8 +4,6 @@ require_relative './post_read'
 require_relative './post_created'
 require_relative './topic_created'
 require_relative './new_user'
-# require_relative './user_visit'
-# require_relative './daily_active_user'
 require_relative './user_action'
 require_relative './flagged_post'
 
@@ -17,9 +15,7 @@ class AdminStatisticsDigest::Report
     posts_read: AdminStatisticsDigest::PostRead,
     posts_created: AdminStatisticsDigest::PostCreated,
     new_users: AdminStatisticsDigest::NewUser,
-    # user_visits: AdminStatisticsDigest::UserVisit,
     topics_created: AdminStatisticsDigest::TopicCreated,
-    # daily_active_users: AdminStatisticsDigest::DailyActiveUser,
     user_actions: AdminStatisticsDigest::UserAction,
     flagged_posts: AdminStatisticsDigest::FlaggedPost
   }.freeze
