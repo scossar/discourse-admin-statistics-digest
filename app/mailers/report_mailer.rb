@@ -20,11 +20,11 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
     period_month = (months_ago[0]).months.ago.strftime('%B')
 
     # users
-    period_dau = daily_active_users(months_ago, description_key: 'dau_description', display_threshold: -20)
+    period_dau = daily_active_users(months_ago, display_threshold: -20)
     period_all_users = all_users(months_ago, description_key: 'all_users_description', display_threshold: -20)
     period_active_users = active_users(months_ago, distinct: true, description_key: 'active_users_description', display_threshold: -20)
     period_user_visits = active_users(months_ago, distinct: false, translation_key: 'user_visits', description_key: 'user_visits_description', display_threshold: -20)
-    period_health = health(months_ago, description_key: 'health_description', distinct: false, display_threshold: -20)
+    period_health = health(months_ago, display_threshold: -20)
     period_new_users = new_users(months_ago, translation_key: 'new_users', description_key: 'new_users_description', display_threshold: -20)
     period_repeat_new_users = new_users(months_ago, repeats: 2, translation_key: 'repeat_new_users', description_key: 'repeat_new_users_description', display_threshold: -20)
 
@@ -139,7 +139,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   def daily_active_users(months_ago, opts = {})
     active_users = report.active_users do |r|
       r.months_ago months_ago
-      r.distinct opts[:distinct]
+      r.distinct false
     end
 
     current_active = value_for_key(active_users, 0, 'active_users')
@@ -154,7 +154,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       key: 'statistics_digest.daily_active_users',
       value: current_dau,
       compare: format_diff(compare),
-      description_key: 'statistics_digest.active_users_description',
+      description_key: 'statistics_digest.dau_description',
       hide: opts[:display_threshold] && compare ? compare < opts[:display_threshold] : false
     }
   end
@@ -162,7 +162,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   def health(months_ago, opts = {})
     active_users = report.active_users do |r|
       r.months_ago months_ago
-      r.distinct opts[:distinct]
+      r.distinct false
     end
 
     current_monthly_active = value_for_key(active_users, 0, 'active_users')
@@ -180,7 +180,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       key: 'statistics_digest.dau_mau',
       value: current_health,
       compare: format_percent(compare),
-      description_key: 'statistics_digest.active_users_description',
+      description_key: 'statistics_digest.health_description',
       hide: opts[:display_threshold] && compare ? compare < opts[:display_threshold] : false
     }
   end
