@@ -31,7 +31,7 @@ en:
     all_users_description: "The number of users on your forum."
     dau_description: "Average number of user visits per day."
     health_description: "Daily Active Users over Monthly Active Users. A measure of how sticky your community is."
-    active_users_description: "Number of unique users who visited during the month."
+    active_users_description: "Number of users who visited during the report period."
     user_visits_description: "Total number of visits (not unique.)"
     new_users_description: "Users who have registered during the reporting period."
     repeat_new_users_description: "New users who have visited more than once."
